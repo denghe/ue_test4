@@ -5,8 +5,6 @@
 #include "PaperSpriteComponent.h"
 #include "PaperGroupedSpriteComponent.h"
 
-#include <string>
-
 AMyPawn::AMyPawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -31,51 +29,42 @@ void AMyPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ps = sprite->GetSprite();
-	auto t = GetTransform();
-	FVector v{};
-	ts.Reserve(50000);
+	// create 50000 monsters
+	monsters.Init(Cfg::numRows, Cfg::numCols, Cfg::cellSize);
 	for (int i = 0; i < 50000; ++i)
 	{
-		v.X = FMath::FRandRange(-100., 100.);
-		v.Y = FMath::FRandRange(-100., 100.);
-		t.SetTranslation(v);
-		ts.Emplace(t);
+		monsters.EmplaceInit();
 	}
-
 }
 
 void AMyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	sprites->ClearInstances();
-	for(int n = ts.Num(), i = 0; i < n; ++i)
+	// update all monsters
+	timePool += DeltaTime;
+	while (timePool >= 1.f / 60)
 	{
-		sprites->AddInstance(ts[i], ps);
+		timePool -= 1.f / 60;
+
+		monsters.Foreach([this](Monster& o)-> xx::ForeachResult
+		{
+			if (o.Update()) return xx::ForeachResult::RemoveAndContinue;
+			monsters.Update(o);
+			return xx::ForeachResult::Continue;
+		});
 	}
-	
-	// if (auto n = sprites->GetInstanceCount(); n < 50000)
-	// {
-	// 	auto t = GetTransform();
-	// 	const auto s = sprite->GetSprite();
-	// 	FVector v{};
-	//
-	// 	for (int i = 0; i < 100; ++i)
-	// 	{
-	// 		v.X = FMath::FRandRange(-100., 100.);
-	// 		v.Y = FMath::FRandRange(-100., 100.);
-	// 		t.SetTranslation(v);
-	// 		sprites->AddInstance(t, s);
-	// 	}
-	// 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow
-	// 	                                 , (std::string("sprites->GetInstanceCount() == ") + std::to_string(n)).
-	// 	                                 c_str());
-	// } else
-	// {
-	// 	// todo: change all pos random
-	// 	sprites->MarkRenderStateDirty();
-	// }
+
+	// draw all monsters
+	sprites->ClearInstances();
+	auto t = GetTransform();
+	int paperIndex{};
+	monsters.Foreach([&](Monster& o)-> void
+	{
+		o.Draw(t, paperIndex);
+		const auto s = papers[paperIndex];
+		sprites->AddInstance(t, s);
+	});
 }
 
 // Called to bind functionality to input

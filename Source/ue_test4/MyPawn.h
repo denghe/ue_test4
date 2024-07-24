@@ -1,15 +1,8 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ue_test4.h"
 #include "GameFramework/Pawn.h"
 #include "MyPawn.generated.h"
-
-class UCapsuleComponent;
-class USpringArmComponent;
-class UCameraComponent;
-class UPaperSprite;
-class UPaperSpriteComponent;
-class UPaperGroupedSpriteComponent;
 
 UCLASS()
 class UE_TEST4_API AMyPawn : public APawn
@@ -29,12 +22,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UPaperSpriteComponent> sprite;
 
-	// todo: more containers
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta=(MakeEditWidget=true))
+	TArray<TObjectPtr<UPaperSprite>> papers;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UPaperGroupedSpriteComponent> sprites;
 
-	UPaperSprite* ps{};
-	TArray<FTransform> ts;
+	//TArray<FTransform> ts;
+	float timePool{};
+	int time{};
+	xx::SpaceGrid<Monster> monsters;
+	
 
 	AMyPawn();
 	virtual void BeginPlay() override;

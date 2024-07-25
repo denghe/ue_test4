@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "PaperSpriteComponent.h"
 #include "PaperGroupedSpriteComponent.h"
+#include "MyUserWidget.h"
 
 AMyPawn::AMyPawn()
 {
@@ -29,6 +30,14 @@ void AMyPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// show fps
+	if (hud_t)
+	{
+		hud = CreateWidget<UMyUserWidget>(GetGameInstance(), hud_t);
+		check(hud);
+		hud->AddToViewport();
+	}
+
 	// create 50000 monsters
 	monsters.Init(Cfg::numRows, Cfg::numCols, Cfg::cellSize);
 	for (int i = 0; i < 50000; ++i)
@@ -40,6 +49,11 @@ void AMyPawn::BeginPlay()
 void AMyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (hud)
+	{
+		hud->SetFps( 1.f / DeltaTime );
+	}
 
 	// update all monsters
 	timePool += DeltaTime;

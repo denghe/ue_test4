@@ -4,6 +4,8 @@
 #include "GameFramework/Pawn.h"
 #include "MyPawn.generated.h"
 
+class UMyUserWidget;
+
 UCLASS()
 class UE_TEST4_API AMyPawn : public APawn
 {
@@ -28,7 +30,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UPaperGroupedSpriteComponent> sprites;
 
-	//TArray<FTransform> ts;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UMyUserWidget> hud_t;
+	
+	TObjectPtr<UMyUserWidget> hud;
 	float timePool{};
 	int time{};
 	xx::SpaceGrid<Monster> monsters;

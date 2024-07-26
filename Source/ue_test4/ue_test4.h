@@ -30,7 +30,7 @@ struct Scene;
 
 struct Player
 {
-	static constexpr float unitRadius{14};	// scale = radius / unitRadius
+	static constexpr float unitRadius{14}; // scale = radius / unitRadius
 	Scene* scene{};
 
 	XY pos{};
@@ -51,7 +51,7 @@ struct PlayerBullet
 	Scene* scene{};
 	xx::Weak<Player> owner;
 
-	float frameIndex{}, moveSpeed{}, radius{};
+	float frameIndex{}, moveSpeed{}, radius{}, speed{};
 	XY pos{}, moveInc{};
 
 	void Init(xx::Shared<Player> owner_, float radians_, float radius_, float speed_);
@@ -64,7 +64,7 @@ struct PlayerBullet
 
 struct Monster
 {
-	static constexpr float unitRadius{14};	// scale = radius / unitRadius
+	static constexpr float unitRadius{14}; // scale = radius / unitRadius
 	Scene* scene{};
 
 	float frameIndex{};
@@ -88,6 +88,9 @@ struct Scene
 	static constexpr XY gridSize{numCols * cellSize, numRows * cellSize};
 	static constexpr XY gridCenter{gridSize / 2};
 
+	// for Draw crop
+	float screenMinX{-1100}, screenMaxX{1100}, screenMinY{-1000}, screenMaxY{300}; // todo: init by pawm
+
 	float timePool{}, delta{};
 	int time{};
 	xx::Rnd rnd;
@@ -103,6 +106,7 @@ struct Scene
 	xx::Shared<Player> player;
 	xx::SpaceGrid<Monster> monsters;
 	xx::SpaceRingDiffuseData srdd;
+	xx::BlockLink<PlayerBullet, xx::BlockLinkVINPT> playerBullets;
 
 	void Init();
 	void Update();

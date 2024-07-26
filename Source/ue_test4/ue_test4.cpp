@@ -161,6 +161,11 @@ void Scene::Update()
 			return xx::ForeachResult::Continue;
 		});
 
+		playerBullets.ForeachLink([](PlayerBullet& o)-> xx::ForeachResult
+		{
+			if (o.Update()) return xx::ForeachResult::RemoveAndContinue;
+			return xx::ForeachResult::Continue;
+		});
 		// ...
 	}
 }
@@ -186,10 +191,10 @@ void Scene::Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites,
 	}
 
 	// calculate screen cut range
-	auto minX = camX - 1100;
-	auto maxX = camX + 1100;
-	auto minY = camY - 1000;
-	auto maxY = camY + 300;
+	auto minX = camX + screenMinX;
+	auto maxX = camX + screenMaxX;
+	auto minY = camY + screenMinY;
+	auto maxY = camY + screenMaxY;
 
 	monsters.Foreach([&](Monster& o)-> void
 	{
@@ -265,6 +270,29 @@ int Player::Draw(double& x, double& y, double& rx, double& rz, double& s)
 	rx = 0;
 	s = radius / unitRadius;
 	return (int)frameIndex + 1;
+}
+
+/****************************************************************************************************/
+/****************************************************************************************************/
+
+void PlayerBullet::Init(xx::Shared<Player> owner_, float radians_, float radius_, float speed_)
+{
+	owner = owner_;
+	scene = owner_->scene;
+	pos = owner_->pos;		// todo: add shoot distance
+	radius = radius_;
+	speed = speed_;
+	//moveInc = 
+}
+
+bool PlayerBullet::Update()
+{
+	return false;
+}
+
+int PlayerBullet::Draw(double& x, double& y, double& rx, double& rz)
+{
+	return 0;
 }
 
 /****************************************************************************************************/

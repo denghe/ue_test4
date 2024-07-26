@@ -117,14 +117,25 @@ void Scene::Init()
 	player = xx::MakeShared<Player>();
 	player->Init(this);
 
-
-	// todo: draw space grid data use monsters
-
-	// create monsters
+	// space index init
 	monsters.Init(Scene::numRows, Scene::numCols, Scene::cellSize);
-	for (int i = 0; i < 100000; ++i)
+
+	// // create monsters
+	// for (int i = 0; i < 100000; ++i)
+	// {
+	// 	monsters.EmplaceInit(this, XY{
+	// 		     Scene::gridCenter.x + FMath::FRandRange(-2000., 2000.),
+	// 		     Scene::gridCenter.y + FMath::FRandRange(-2000., 2000.)
+	// 	}, 140);
+	// }
+
+	// space index search data init
+	srdd.Init(numRows / 2, cellSize);
+
+	// create monsters by search data
+	for (auto& i : srdd.idxs)
 	{
-		monsters.EmplaceInit(this);
+		monsters.EmplaceInit(this, XY{gridCenter.x + (float)i.x * 16, gridCenter.y + (float)i.y * 16}, 16);
 	}
 }
 
@@ -203,7 +214,7 @@ void Scene::Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites,
 void Scene::Log(std::string_view sv)
 {
 	FString fs(sv.data(), sv.size());
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, fs);
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, fs);
 }
 
 void Player::Init(Scene* scene_)
@@ -250,11 +261,11 @@ int Player::Draw(double& x, double& y, double& rx, double& rz)
 	return (int)frameIndex + 1;
 }
 
-void Monster::Init(Scene* scene_)
+void Monster::Init(Scene* scene_, XY pos_, float radius_)
 {
 	scene = scene_;
-	pos.x = Scene::gridCenter.x + FMath::FRandRange(-2000., 2000.);
-	pos.y = Scene::gridCenter.y + FMath::FRandRange(-2000., 2000.);
+	pos = pos_;
+	radius = radius_;
 	originalPos = pos;
 }
 
@@ -271,11 +282,20 @@ bool Monster::Update()
 	if (auto& player = scene->player)
 	{
 		auto d = pos - player->pos;
-		auto r2 = avoidanceRadius + player->radius;
+		auto r2 = radius * 3 + player->radius;
 		auto dd = d.Mag2();
-		if (dd < r2)
+		if (dd < r2 * r2)
 		{
-			pos += d / std::sqrt(dd) * moveSpeed;
+			if (dd < std::numeric_limits<float>::epsilon())
+			{
+				auto radians = scene->rnd.Next<float>() * M_PI * 2;
+				pos.x += std::cos(radians) * moveSpeed;
+				pos.y += std::sin(radians) * moveSpeed;
+			}
+			else
+			{
+				pos += d / std::sqrt(dd) * moveSpeed;
+			}
 			lastPlayerPos = player->pos;
 		}
 		else if (lastPlayerPos != player->pos)

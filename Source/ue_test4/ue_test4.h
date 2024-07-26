@@ -22,6 +22,7 @@ class UPaperGroupedSpriteComponent;
 #include "xx_string.h"
 #include "xx_ptr.h"
 #include "xx_task.h"
+#include "xx_rnd.h"
 using XY = xx::XY;
 
 
@@ -33,8 +34,8 @@ struct Player
 	XY pos{};
 	bool flipX{};
 	float frameIndex{};
-	float moveSpeed{10};
-	float radius{140};
+	float moveSpeed{5};
+	float radius{14};
 	
 	void Init(Scene* scene_);
 	bool Update();
@@ -46,11 +47,11 @@ struct Monster
 	Scene* scene{};
 	
 	float frameIndex{};
-	float radius{140}, avoidanceRadius{140};
-	float moveSpeed{5};
+	float radius{};
+	float moveSpeed{3};
 	XY pos{}, originalPos{}, lastPlayerPos{};
 	
-	void Init(Scene* scene_);
+	void Init(Scene* scene_, XY pos_, float radius_);
 	bool Update();
 	int Draw(double& x, double& y, double& rx, double& rz);
 };
@@ -65,6 +66,7 @@ struct Scene
 
 	float timePool{}, delta{};
 	int time{};
+	xx::Rnd rnd;
 
 	// input states
 	bool playerUsingKeyboard{}, playerMoving{};
@@ -76,6 +78,7 @@ struct Scene
 
 	xx::Shared<Player> player;
 	xx::SpaceGrid<Monster> monsters;
+	xx::SpaceRingDiffuseData srdd;
 
 	void Init();
 	void Update();

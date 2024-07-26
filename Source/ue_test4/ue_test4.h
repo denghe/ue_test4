@@ -34,7 +34,7 @@ struct Player
 	bool flipX{};
 	float frameIndex{};
 	float moveSpeed{10};
-	float radius{100};
+	float radius{140};
 	
 	void Init(Scene* scene_);
 	bool Update();
@@ -46,7 +46,7 @@ struct Monster
 	Scene* scene{};
 	
 	float frameIndex{};
-	float radius{100}, avoidanceRadius{500};
+	float radius{140}, avoidanceRadius{140};
 	float moveSpeed{5};
 	XY pos{}, originalPos{}, lastPlayerPos{};
 	

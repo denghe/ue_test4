@@ -31,21 +31,21 @@ AMyPawn::AMyPawn()
 
 	sprites = CreateDefaultSubobject<UPaperGroupedSpriteComponent>("sprites");
 	sprites->SetupAttachment(RootComponent);
-
-	// set window mode 1920x1080
-	auto us = GEngine->GetGameUserSettings();
-	us->SetScreenResolution({1920, 1080});
-	us->SetFullscreenMode(EWindowMode::Type::Windowed);
-	us->ApplyResolutionSettings(false);
-	// if(us->SupportsHDRDisplayOutput())
-	// {
-	// 	us->EnableHDRDisplayOutput(true);
-	// }
 }
 
 void AMyPawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	auto us = GEngine->GetGameUserSettings();
+	if(us->SupportsHDRDisplayOutput())
+	{
+		//us->EnableHDRDisplayOutput(true);	// not working...
+		GEngine->Exec( GetWorld(), TEXT( "r.HDR.EnableHDROutput 1" ) );
+	}
+	// us->SetScreenResolution({1920, 1080});
+	// us->SetFullscreenMode(EWindowMode::Type::Fullscreen);
+	// us->ApplySettings(false);
 
 	// map input 
 	const auto pc = Cast<APlayerController>(Controller);

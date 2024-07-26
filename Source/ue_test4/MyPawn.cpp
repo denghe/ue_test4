@@ -11,6 +11,7 @@
 #include "Components/InputComponent.h"
 #include "InputActionValue.h"
 #include "GameFramework/Controller.h"
+#include "GameFramework/GameUserSettings.h"
 
 AMyPawn::AMyPawn()
 {
@@ -30,6 +31,16 @@ AMyPawn::AMyPawn()
 
 	sprites = CreateDefaultSubobject<UPaperGroupedSpriteComponent>("sprites");
 	sprites->SetupAttachment(RootComponent);
+
+	// set window mode 1920x1080
+	auto us = GEngine->GetGameUserSettings();
+	us->SetScreenResolution({1920, 1080});
+	us->SetFullscreenMode(EWindowMode::Type::Windowed);
+	us->ApplyResolutionSettings(false);
+	// if(us->SupportsHDRDisplayOutput())
+	// {
+	// 	us->EnableHDRDisplayOutput(true);
+	// }
 }
 
 void AMyPawn::BeginPlay()

@@ -1,11 +1,8 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "ue_test4.h"
 #include "Modules/ModuleManager.h"
 #include "PaperGroupedSpriteComponent.h"
 
 IMPLEMENT_PRIMARY_GAME_MODULE(FDefaultGameModuleImpl, ue_test4, "ue_test4");
-
 
 void Scene::HandlePlayerInput()
 {
@@ -115,7 +112,7 @@ void Scene::Init()
 {
 	// create player & init
 	player = xx::MakeShared<Player>();
-	player->Init(this);
+	player->Init(this, gridCenter, 28, 10);
 
 	// space index init
 	monsters.Init(Scene::numRows, Scene::numCols, Scene::cellSize);
@@ -135,7 +132,7 @@ void Scene::Init()
 	// create monsters by search data
 	for (auto& i : srdd.idxs)
 	{
-		monsters.EmplaceInit(this, XY{gridCenter.x + (float)i.x * 16, gridCenter.y + (float)i.y * 16}, 16);
+		monsters.EmplaceInit(this, XY{gridCenter.x + (float)i.x * 16, gridCenter.y + (float)i.y * 16}, 14, 3);
 	}
 }
 
@@ -173,13 +170,14 @@ void Scene::Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites,
 {
 	sprites->ClearInstances();
 	FTransform t;
-	double x{}, y{}, rx{}, rz{};
+	double x{}, y{}, rx{}, rz{}, s{};
 
 	if (player)
 	{
-		const auto paperIndex = player->Draw(x, y, rx, rz);
+		const auto paperIndex = player->Draw(x, y, rx, rz, s);
 		t.SetLocation({x, y, z});
 		t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
+		t.SetScale3D({s, s, s});
 		sprites->AddInstance(t, papers[paperIndex], false, FLinearColor::Blue);
 
 		// camera follow player
@@ -195,7 +193,8 @@ void Scene::Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites,
 
 	monsters.Foreach([&](Monster& o)-> void
 	{
-		if (const auto paperIndex = o.Draw(x, y, rx, rz); paperIndex >= 0)
+		const auto paperIndex = o.Draw(x, y, rx, rz, s);
+		if (paperIndex >= 0)
 		{
 			if (x < minX || x > maxX || y < minY || y > maxY)
 			{
@@ -205,6 +204,7 @@ void Scene::Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites,
 			{
 				t.SetLocation({x, y, z});
 				t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
+				t.SetScale3D({s, s, s});
 				sprites->AddInstance(t, papers[paperIndex], false, FLinearColor::White);
 			}
 		}
@@ -217,10 +217,15 @@ void Scene::Log(std::string_view sv)
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, fs);
 }
 
-void Player::Init(Scene* scene_)
+/****************************************************************************************************/
+/****************************************************************************************************/
+
+void Player::Init(Scene* scene_, XY pos_, float radius_, float speed_)
 {
 	scene = scene_;
-	pos = Scene::gridCenter;
+	pos = pos_;
+	radius = radius_;
+	speed = speed_;
 }
 
 bool Player::Update()
@@ -229,7 +234,7 @@ bool Player::Update()
 	{
 		// move control
 		auto& mv = scene->playerMoveValue;
-		pos += mv * moveSpeed;
+		pos += mv * speed;
 
 		// flip check
 		if (mv.x != 0)
@@ -251,21 +256,26 @@ bool Player::Update()
 	return false;
 }
 
-int Player::Draw(double& x, double& y, double& rx, double& rz)
+int Player::Draw(double& x, double& y, double& rx, double& rz, double& s)
 {
 	x = (double)(pos.x - Scene::gridCenter.x);
 	y = (double)(pos.y - Scene::gridCenter.y);
 	if (flipX) rz = 180;
 	else rz = 0;
 	rx = 0;
+	s = radius / unitRadius;
 	return (int)frameIndex + 1;
 }
 
-void Monster::Init(Scene* scene_, XY pos_, float radius_)
+/****************************************************************************************************/
+/****************************************************************************************************/
+
+void Monster::Init(Scene* scene_, XY pos_, float radius_, float speed_)
 {
 	scene = scene_;
 	pos = pos_;
 	radius = radius_;
+	speed = speed_;
 	originalPos = pos;
 }
 
@@ -282,19 +292,43 @@ bool Monster::Update()
 	if (auto& player = scene->player)
 	{
 		auto d = pos - player->pos;
+		auto dxx = d.x * d.x;
+		auto dyy = d.y * d.y;
+		auto dd = dxx + dyy;
 		auto r2 = radius * 3 + player->radius;
-		auto dd = d.Mag2();
 		if (dd < r2 * r2)
 		{
-			if (dd < std::numeric_limits<float>::epsilon())
+			if (dd < std::numeric_limits<float>::epsilon()) // avoid SQRT == 0
 			{
 				auto radians = scene->rnd.Next<float>() * M_PI * 2;
-				pos.x += std::cos(radians) * moveSpeed;
-				pos.y += std::sin(radians) * moveSpeed;
+				pos.x += std::cos(radians) * speed;
+				pos.y += std::sin(radians) * speed;
+			}
+			else if (dxx < std::numeric_limits<float>::epsilon()) // avoid same row
+			{
+				if (scene->rnd.Next<bool>())
+				{
+					pos.x += speed;
+				}
+				else
+				{
+					pos.x -= speed;
+				}
+			}
+			else if (dyy < std::numeric_limits<float>::epsilon()) // avoid same column
+			{
+				if (scene->rnd.Next<bool>())
+				{
+					pos.y += speed;
+				}
+				else
+				{
+					pos.y -= speed;
+				}
 			}
 			else
 			{
-				pos += d / std::sqrt(dd) * moveSpeed;
+				pos += d / std::sqrt(dd) * speed;
 			}
 			lastPlayerPos = player->pos;
 		}
@@ -304,13 +338,13 @@ bool Monster::Update()
 			{
 				d = originalPos - pos;
 				dd = d.Mag2();
-				if (dd <= moveSpeed * moveSpeed)
+				if (dd <= speed * speed)
 				{
 					pos = originalPos;
 				}
 				else
 				{
-					pos += d / std::sqrt(dd) * moveSpeed;
+					pos += d / std::sqrt(dd) * speed;
 				}
 			}
 		}
@@ -319,11 +353,12 @@ bool Monster::Update()
 	return false;
 }
 
-int Monster::Draw(double& x, double& y, double& rz, double& rx)
+int Monster::Draw(double& x, double& y, double& rz, double& rx, double& s)
 {
 	x = (double)(pos.x - Scene::gridCenter.x);
 	y = (double)(pos.y - Scene::gridCenter.y);
 	rz = 0;
 	rx = 0;
+	s = radius / unitRadius;
 	return (int)frameIndex + 1;
 }

@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -25,36 +23,62 @@ class UPaperGroupedSpriteComponent;
 #include "xx_rnd.h"
 using XY = xx::XY;
 
-
 struct Scene;
+
+/****************************************************************************************************/
+/****************************************************************************************************/
+
 struct Player
 {
+	static constexpr float unitRadius{14};	// scale = radius / unitRadius
 	Scene* scene{};
-	
+
 	XY pos{};
 	bool flipX{};
-	float frameIndex{};
-	float moveSpeed{5};
-	float radius{14};
-	
-	void Init(Scene* scene_);
+	float frameIndex{}, speed{}, radius{};
+
+	void Init(Scene* scene_, XY pos_, float radius_, float speed_);
+	bool Update();
+	int Draw(double& x, double& y, double& rx, double& rz, double& s);
+};
+
+/****************************************************************************************************/
+/****************************************************************************************************/
+
+// todo: aim by mouse & shoot 
+struct PlayerBullet
+{
+	Scene* scene{};
+	xx::Weak<Player> owner;
+
+	float frameIndex{}, moveSpeed{}, radius{};
+	XY pos{}, moveInc{};
+
+	void Init(xx::Shared<Player> owner_, float radians_, float radius_, float speed_);
 	bool Update();
 	int Draw(double& x, double& y, double& rx, double& rz);
 };
+
+/****************************************************************************************************/
+/****************************************************************************************************/
 
 struct Monster
 {
+	static constexpr float unitRadius{14};	// scale = radius / unitRadius
 	Scene* scene{};
-	
+
 	float frameIndex{};
 	float radius{};
-	float moveSpeed{3};
+	float speed{};
 	XY pos{}, originalPos{}, lastPlayerPos{};
-	
-	void Init(Scene* scene_, XY pos_, float radius_);
+
+	void Init(Scene* scene_, XY pos_, float radius_, float speed_);
 	bool Update();
-	int Draw(double& x, double& y, double& rx, double& rz);
+	int Draw(double& x, double& y, double& rx, double& rz, double& s);
 };
+
+/****************************************************************************************************/
+/****************************************************************************************************/
 
 struct Scene
 {
@@ -82,7 +106,8 @@ struct Scene
 
 	void Init();
 	void Update();
-	void Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites, TArray<TObjectPtr<UPaperSprite>> const& papers, float z);
+	void Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites, TArray<TObjectPtr<UPaperSprite>> const& papers,
+	          float z);
 
 	void Log(std::string_view sv);
 };

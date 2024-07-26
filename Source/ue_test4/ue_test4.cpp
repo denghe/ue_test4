@@ -2,7 +2,6 @@
 
 #include "ue_test4.h"
 #include "Modules/ModuleManager.h"
-#include "PaperSpriteComponent.h"
 #include "PaperGroupedSpriteComponent.h"
 
 IMPLEMENT_PRIMARY_GAME_MODULE(FDefaultGameModuleImpl, ue_test4, "ue_test4");
@@ -98,12 +97,12 @@ void Scene::HandlePlayerInput()
 			playerMoveValue.y = 0;
 			playerMoving = true;
 		}
-		if (playerMoving)
-		{
-			auto s = xx::ToString(playerKBMovingUp, " ", playerKBMovingDown, " ", playerKBMovingLeft, " ",
-			                      playerKBMovingRight, " ", playerMoveValue);
-			GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::White, s.c_str());
-		}
+		// if (playerMoving)
+		// {
+		// 	auto s = xx::ToString(playerKBMovingUp, " ", playerKBMovingDown, " ", playerKBMovingLeft, " ",
+		// 	                      playerKBMovingRight, " ", playerMoveValue);
+		// 	Log(s);
+		// }
 	}
 	if (playerMoving)
 	{
@@ -118,9 +117,12 @@ void Scene::Init()
 	player = xx::MakeShared<Player>();
 	player->Init(this);
 
-	// create 50000 monsters
+
+	// todo: draw space grid data use monsters
+
+	// create monsters
 	monsters.Init(Scene::numRows, Scene::numCols, Scene::cellSize);
-	for (int i = 0; i < 50000; ++i)
+	for (int i = 0; i < 100000; ++i)
 	{
 		monsters.EmplaceInit(this);
 	}
@@ -160,13 +162,13 @@ void Scene::Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites,
 {
 	sprites->ClearInstances();
 	FTransform t;
-	double x{}, y{}, r{};
+	double x{}, y{}, rx{}, rz{};
 
 	if (player)
 	{
-		const auto paperIndex = player->Draw(x, y, r);
+		const auto paperIndex = player->Draw(x, y, rx, rz);
 		t.SetLocation({x, y, z});
-		t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({0, 0, r}));
+		t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
 		sprites->AddInstance(t, papers[paperIndex], false, FLinearColor::Blue);
 
 		// camera follow player
@@ -182,7 +184,7 @@ void Scene::Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites,
 
 	monsters.Foreach([&](Monster& o)-> void
 	{
-		if (const auto paperIndex = o.Draw(x, y, r); paperIndex >= 0)
+		if (const auto paperIndex = o.Draw(x, y, rx, rz); paperIndex >= 0)
 		{
 			if (x < minX || x > maxX || y < minY || y > maxY)
 			{
@@ -191,11 +193,17 @@ void Scene::Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites,
 			else
 			{
 				t.SetLocation({x, y, z});
-				t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({0, 0, r}));
+				t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
 				sprites->AddInstance(t, papers[paperIndex], false, FLinearColor::White);
 			}
 		}
 	});
+}
+
+void Scene::Log(std::string_view sv)
+{
+	FString fs(sv.data(), sv.size());
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, fs);
 }
 
 void Player::Init(Scene* scene_)
@@ -232,12 +240,13 @@ bool Player::Update()
 	return false;
 }
 
-int Player::Draw(double& x, double& y, double& r)
+int Player::Draw(double& x, double& y, double& rx, double& rz)
 {
 	x = (double)(pos.x - Scene::gridCenter.x);
 	y = (double)(pos.y - Scene::gridCenter.y);
-	if (flipX) r = 180;
-	else r = 0;
+	if (flipX) rz = 180;
+	else rz = 0;
+	rx = 0;
 	return (int)frameIndex + 1;
 }
 
@@ -246,17 +255,55 @@ void Monster::Init(Scene* scene_)
 	scene = scene_;
 	pos.x = Scene::gridCenter.x + FMath::FRandRange(-2000., 2000.);
 	pos.y = Scene::gridCenter.y + FMath::FRandRange(-2000., 2000.);
+	originalPos = pos;
 }
 
 bool Monster::Update()
 {
+	// step animation
+	frameIndex += 1.f / 5;
+	if (frameIndex >= 10)
+	{
+		frameIndex -= 10;
+	}
+
+	// check player distance, avoidance
+	if (auto& player = scene->player)
+	{
+		auto d = pos - player->pos;
+		auto r2 = avoidanceRadius + player->radius;
+		auto dd = d.Mag2();
+		if (dd < r2)
+		{
+			pos += d / std::sqrt(dd) * moveSpeed;
+			lastPlayerPos = player->pos;
+		}
+		else if (lastPlayerPos != player->pos)
+		{
+			if (pos != originalPos)
+			{
+				d = originalPos - pos;
+				dd = d.Mag2();
+				if (dd <= moveSpeed * moveSpeed)
+				{
+					pos = originalPos;
+				}
+				else
+				{
+					pos += d / std::sqrt(dd) * moveSpeed;
+				}
+			}
+		}
+	}
+
 	return false;
 }
 
-int Monster::Draw(double& x, double& y, double& r)
+int Monster::Draw(double& x, double& y, double& rz, double& rx)
 {
 	x = (double)(pos.x - Scene::gridCenter.x);
 	y = (double)(pos.y - Scene::gridCenter.y);
-	r = 0;
+	rz = 0;
+	rx = 0;
 	return (int)frameIndex + 1;
 }

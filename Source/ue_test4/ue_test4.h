@@ -34,10 +34,11 @@ struct Player
 	bool flipX{};
 	float frameIndex{};
 	float moveSpeed{10};
+	float radius{100};
 	
 	void Init(Scene* scene_);
 	bool Update();
-	int Draw(double& x, double& y, double& r);
+	int Draw(double& x, double& y, double& rx, double& rz);
 };
 
 struct Monster
@@ -45,11 +46,13 @@ struct Monster
 	Scene* scene{};
 	
 	float frameIndex{};
-	XY pos{};
+	float radius{100}, avoidanceRadius{500};
+	float moveSpeed{5};
+	XY pos{}, originalPos{}, lastPlayerPos{};
 	
 	void Init(Scene* scene_);
 	bool Update();
-	int Draw(double& x, double& y, double& r);
+	int Draw(double& x, double& y, double& rx, double& rz);
 };
 
 struct Scene
@@ -77,4 +80,6 @@ struct Scene
 	void Init();
 	void Update();
 	void Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites, TArray<TObjectPtr<UPaperSprite>> const& papers, float z);
+
+	void Log(std::string_view sv);
 };

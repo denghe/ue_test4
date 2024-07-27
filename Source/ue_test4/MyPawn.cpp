@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "PaperSpriteComponent.h"
 #include "PaperGroupedSpriteComponent.h"
+#include "PaperGroupedSpriteActor.h"
 #include "MyUserWidget.h"
 
 #include "EnhancedInputComponent.h"
@@ -12,6 +13,7 @@
 #include "InputActionValue.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Kismet/GameplayStatics.h"
 
 AMyPawn::AMyPawn()
 {
@@ -28,59 +30,69 @@ AMyPawn::AMyPawn()
 
 	sprite = CreateDefaultSubobject<UPaperSpriteComponent>("sprite");
 	sprite->SetupAttachment(RootComponent);
-
-	sprites = CreateDefaultSubobject<UPaperGroupedSpriteComponent>("sprites");
-	sprites->SetupAttachment(RootComponent);
 }
 
 void AMyPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	auto w = GetWorld();
 
+	// init display 
 	auto us = GEngine->GetGameUserSettings();
 	us->SetScreenResolution({1920, 1080});
 	us->SetFullscreenMode(EWindowMode::Type::Fullscreen);
 	us->ApplySettings(false);
-	if(us->SupportsHDRDisplayOutput())
+	if (us->SupportsHDRDisplayOutput())
 	{
 		//us->EnableHDRDisplayOutput(true);	// not working...
-		GEngine->Exec( GetWorld(), TEXT( "r.HDR.EnableHDROutput 1" ) );
+		GEngine->Exec(w, TEXT("r.HDR.EnableHDROutput 1")); // ok
 	}
 
-	// map input 
+	// input init 
 	const auto pc = Cast<APlayerController>(Controller);
 	check(pc);
 	const auto ei = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pc->GetLocalPlayer());
 	check(ei);
 	ei->AddMappingContext(imc, 0);
 
-	// init UI
+	// UI init
 	check(hud_t);
 	hud = CreateWidget<UMyUserWidget>(GetGameInstance(), hud_t);
 	check(hud);
 	hud->AddToViewport();
 
-	// init scene
+	// do not use this component. only for design
+	//sprite->SetVisibility(false);
+	sprite->DestroyComponent();
+	sprite = {};
+
+	// locate renderers
+	TArray<AActor*> renderers;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaperGroupedSpriteActor::StaticClass(), renderers);
+	check(renderers.Num() >= 3);
+
+	// scene init
 	scene = std::make_unique<Scene>();
-	scene->Init(); // todo
-	originalTrans = GetTransform();
-	originalLocation = originalTrans.GetLocation();
-	sprite->SetVisibility(false);
+	scene->screenMinX = -1100;	// todo: get from bp
+	scene->screenMaxX = 1100;
+	scene->screenMinY = -1000;
+	scene->screenMaxY = 300;
+	scene->rendererChars = ((APaperGroupedSpriteActor*)renderers[0])->GetRenderComponent();
+	scene->rendererBullets = ((APaperGroupedSpriteActor*)renderers[1])->GetRenderComponent();
+	scene->rendererEffects = ((APaperGroupedSpriteActor*)renderers[2])->GetRenderComponent();
+	scene->papers = papers.GetData();
+	scene->papersCount = papers.Num();
+	scene->originalZ = GetTransform().GetLocation().Z;
+	scene->Init();
 }
 
 void AMyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	hud->SetFps(1.f / DeltaTime);
-	scene->delta = DeltaTime;
-	scene->Update();
-	scene->Draw(sprites, papers, originalZ);
-
+	scene->Update(DeltaTime);
+	scene->Draw();
 	// camera follow player
-	originalTrans.SetLocation({
-		originalLocation.X - scene->camX, originalLocation.Y - scene->camY, originalZ
-	});
-	sprites->SetRelativeTransform(originalTrans);
 	SetActorLocation({scene->camX, scene->camY, originalZ});
 }
 

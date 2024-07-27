@@ -88,10 +88,8 @@ struct Scene
 	static constexpr XY gridSize{numCols * cellSize, numRows * cellSize};
 	static constexpr XY gridCenter{gridSize / 2};
 
-	// for Draw crop
-	float screenMinX{-1100}, screenMaxX{1100}, screenMinY{-1000}, screenMaxY{300}; // todo: init by pawm
-
-	float timePool{}, delta{};
+	// scene states
+	float timePool{};
 	int time{};
 	xx::Rnd rnd;
 
@@ -101,17 +99,27 @@ struct Scene
 	XY playerMoveValue{}, playerDirection{1, 0};
 	void HandlePlayerInput();
 
+	// camera location
 	double camX{}, camY{};
 
+	// scene objects
 	xx::Shared<Player> player;
 	xx::SpaceGrid<Monster> monsters;
 	xx::SpaceRingDiffuseData srdd;
 	xx::BlockLink<PlayerBullet, xx::BlockLinkVINPT> playerBullets;
 
+	// fill these by pawm before call Init()
+	// args for Draw()
+	float screenMinX{}, screenMaxX{}, screenMinY{}, screenMaxY{}; 
+	UPaperGroupedSpriteComponent *rendererChars{}, *rendererBullets{}, *rendererEffects{};
+	UPaperSprite** papers{};
+	int papersCount{};
+	float originalZ{};
+
+	// life cycle functions
 	void Init();
-	void Update();
-	void Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites, TArray<TObjectPtr<UPaperSprite>> const& papers,
-	          float z);
+	void Update(float delta);
+	void Draw();
 
 	void Log(std::string_view sv);
 };

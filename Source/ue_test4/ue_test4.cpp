@@ -136,7 +136,7 @@ void Scene::Init()
 	}
 }
 
-void Scene::Update()
+void Scene::Update(float delta)
 {
 	HandlePlayerInput();
 
@@ -170,27 +170,30 @@ void Scene::Update()
 	}
 }
 
-void Scene::Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites,
-                 TArray<TObjectPtr<UPaperSprite>> const& papers, float z)
+void Scene::Draw()
 {
-	sprites->ClearInstances();
+	// init
+	rendererChars->ClearInstances();
+	rendererBullets->ClearInstances();
+	rendererEffects->ClearInstances();
 	FTransform t;
 	double x{}, y{}, rx{}, rz{}, s{};
 
+	// draw player( do not need crop )
 	if (player)
 	{
 		const auto paperIndex = player->Draw(x, y, rx, rz, s);
-		t.SetLocation({x, y, z});
+		t.SetLocation({x, y, originalZ});
 		t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
 		t.SetScale3D({s, s, s});
-		sprites->AddInstance(t, papers[paperIndex], false, FLinearColor::Blue);
+		rendererChars->AddInstance(t, papers[paperIndex], false, FLinearColor::Blue);
 
 		// camera follow player
 		camX = x;
 		camY = y;
 	}
 
-	// calculate screen cut range
+	// calculate screen crop range
 	auto minX = camX + screenMinX;
 	auto maxX = camX + screenMaxX;
 	auto minY = camY + screenMinY;
@@ -201,16 +204,12 @@ void Scene::Draw(TObjectPtr<UPaperGroupedSpriteComponent> const& sprites,
 		const auto paperIndex = o.Draw(x, y, rx, rz, s);
 		if (paperIndex >= 0)
 		{
-			if (x < minX || x > maxX || y < minY || y > maxY)
+			if (!(x < minX || x > maxX || y < minY || y > maxY))
 			{
-				// do nothing
-			}
-			else
-			{
-				t.SetLocation({x, y, z});
+				t.SetLocation({x, y, originalZ});
 				t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
 				t.SetScale3D({s, s, s});
-				sprites->AddInstance(t, papers[paperIndex], false, FLinearColor::White);
+				rendererChars->AddInstance(t, papers[paperIndex], false, FLinearColor::White);
 			}
 		}
 	});
@@ -279,7 +278,7 @@ void PlayerBullet::Init(xx::Shared<Player> owner_, float radians_, float radius_
 {
 	owner = owner_;
 	scene = owner_->scene;
-	pos = owner_->pos;		// todo: add shoot distance
+	pos = owner_->pos; // todo: add shoot distance
 	radius = radius_;
 	speed = speed_;
 	//moveInc = 

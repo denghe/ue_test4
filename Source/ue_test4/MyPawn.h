@@ -28,10 +28,8 @@ public:
 	TObjectPtr<UPaperSpriteComponent> sprite;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta=(MakeEditWidget=true))
-	TArray<TObjectPtr<UPaperSprite>> papers;
+	TArray<UPaperSprite*> papers;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	TObjectPtr<UPaperGroupedSpriteComponent> sprites;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float originalZ{};
@@ -67,8 +65,6 @@ public:
 
 	TObjectPtr<UMyUserWidget> hud;
 	std::unique_ptr<Scene> scene;
-	FTransform originalTrans;
-	UE::Math::TVector<double> originalLocation; 
 
 	AMyPawn();
 	virtual void BeginPlay() override;

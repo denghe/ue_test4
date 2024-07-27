@@ -48,15 +48,17 @@ struct Player
 // todo: aim by mouse & shoot 
 struct PlayerBullet
 {
+	static constexpr float unitRadius{14}; // scale = radius / unitRadius
 	Scene* scene{};
 	xx::Weak<Player> owner;
 
-	float frameIndex{}, moveSpeed{}, radius{}, speed{};
+	int lifeEndTime{};
+	float frameIndex{}, moveSpeed{}, radians{}, radius{}, speed{};
 	XY pos{}, moveInc{};
 
 	void Init(xx::Shared<Player> owner_, float radians_, float radius_, float speed_);
 	bool Update();
-	int Draw(double& x, double& y, double& rx, double& rz);
+	int Draw(double& x, double& y, double& rx, double& rz, double& s);
 };
 
 /****************************************************************************************************/
@@ -82,9 +84,11 @@ struct Monster
 
 struct Scene
 {
-	static constexpr int cellSize = 32;
-	static constexpr int numRows = 512;
-	static constexpr int numCols = 512;
+	static constexpr int framePerSeconds{60};
+	static constexpr float frameDelaySeconds{1.f / framePerSeconds};
+	static constexpr int cellSize{32};
+	static constexpr int numRows{512};
+	static constexpr int numCols{512};
 	static constexpr XY gridSize{numCols * cellSize, numRows * cellSize};
 	static constexpr XY gridCenter{gridSize / 2};
 
@@ -92,6 +96,12 @@ struct Scene
 	float timePool{};
 	int time{};
 	xx::Rnd rnd;
+	xx::SpaceRingDiffuseData srdd;
+
+	// mouse states
+	FVector mouseLocation, mouseDirection;
+	XY mousePos{}, mouseGridPos{};
+	bool mouseIsReady{};
 
 	// input states
 	bool playerUsingKeyboard{}, playerMoving{};
@@ -105,12 +115,11 @@ struct Scene
 	// scene objects
 	xx::Shared<Player> player;
 	xx::SpaceGrid<Monster> monsters;
-	xx::SpaceRingDiffuseData srdd;
 	xx::BlockLink<PlayerBullet, xx::BlockLinkVINPT> playerBullets;
 
 	// fill these by pawm before call Init()
 	// args for Draw()
-	float screenMinX{}, screenMaxX{}, screenMinY{}, screenMaxY{}; 
+	float screenMinX{}, screenMaxX{}, screenMinY{}, screenMaxY{};
 	UPaperGroupedSpriteComponent *rendererChars{}, *rendererBullets{}, *rendererEffects{};
 	UPaperSprite** papers{};
 	int papersCount{};

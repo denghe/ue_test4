@@ -53,7 +53,9 @@ namespace xx {
                 }
                 else {
                     size_t i = 0;
-                    while ((c = format[offset])) {
+                LabLoop:
+                    c = format[offset];
+                    if (c) {
                         if (c == '}') {
                             if (i >= sizeof...(vs)) return i;   // error
                             if (cache[i].second) {
@@ -64,13 +66,15 @@ namespace xx {
                                 AppendFormatCore(std::make_index_sequence<sizeof...(TS)>(), s, i, vs...);
                                 cache[i].second = s.size() - cache[i].first;
                             }
-                            break;
+                            goto LabEnd;
                         }
                         else {
                             i = i * 10 + (c - '0');
                         }
                         ++offset;
                     }
+                    goto LabLoop;
+                LabEnd:;
                 }
             }
             else {

@@ -63,6 +63,7 @@ public:
 	void InputHandle_GPMoveBegin(FInputActionValue const& av);
 	void InputHandle_GPMoveEnd(FInputActionValue const& av);
 
+	APlayerController* pc{};
 	TObjectPtr<UMyUserWidget> hud;
 	std::unique_ptr<Scene> scene;
 

@@ -112,7 +112,7 @@ void Scene::Init()
 {
 	// create player & init
 	player = xx::MakeShared<Player>();
-	player->Init(this, gridCenter, 28, 10);
+	player->Init(this, gridCenter, 28, 3);
 
 	// space index init
 	monsters.Init(Scene::numRows, Scene::numCols, Scene::cellSize);
@@ -132,7 +132,7 @@ void Scene::Init()
 	// create monsters by search data
 	for (auto& i : srdd.idxs)
 	{
-		monsters.EmplaceInit(this, XY{gridCenter.x + (float)i.x * 16, gridCenter.y + (float)i.y * 16}, 14, 3);
+		monsters.EmplaceInit(this, XY{gridCenter.x + (float)i.x * 8, gridCenter.y + (float)i.y * 8}, 14, 2);
 	}
 }
 
@@ -141,9 +141,9 @@ void Scene::Update(float delta)
 	HandlePlayerInput();
 
 	timePool += delta;
-	while (timePool >= 1.f / 60)
+	while (timePool >= frameDelaySeconds)
 	{
-		timePool -= 1.f / 60;
+		timePool -= frameDelaySeconds;
 		++time;
 
 		if (player)
@@ -178,6 +178,12 @@ void Scene::Draw()
 	rendererEffects->ClearInstances();
 	FTransform t;
 	double x{}, y{}, rx{}, rz{}, s{};
+	
+	// calculate screen crop range
+	auto minX = camX + screenMinX;
+	auto maxX = camX + screenMaxX;
+	auto minY = camY + screenMinY;
+	auto maxY = camY + screenMaxY;
 
 	// draw player( do not need crop )
 	if (player)
@@ -193,12 +199,6 @@ void Scene::Draw()
 		camY = y;
 	}
 
-	// calculate screen crop range
-	auto minX = camX + screenMinX;
-	auto maxX = camX + screenMaxX;
-	auto minY = camY + screenMinY;
-	auto maxY = camY + screenMaxY;
-
 	monsters.Foreach([&](Monster& o)-> void
 	{
 		const auto paperIndex = o.Draw(x, y, rx, rz, s);
@@ -210,6 +210,21 @@ void Scene::Draw()
 				t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
 				t.SetScale3D({s, s, s});
 				rendererChars->AddInstance(t, papers[paperIndex], false, FLinearColor::White);
+			}
+		}
+	});
+	
+	playerBullets.ForeachLink([&](PlayerBullet& o)-> void
+	{
+		const auto paperIndex = o.Draw(x, y, rx, rz, s);
+		if (paperIndex >= 0)
+		{
+			if (!(x < minX || x > maxX || y < minY || y > maxY))
+			{
+				t.SetLocation({x, y, originalZ});
+				t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
+				t.SetScale3D({s, s, s});
+				rendererBullets->AddInstance(t, papers[paperIndex], false, FLinearColor::White);
 			}
 		}
 	});
@@ -256,6 +271,11 @@ bool Player::Update()
 		// todo: limit move range
 	}
 
+	// todo: shoot
+	auto d = scene->mouseGridPos - pos;
+	auto r = std::atan2(d.y, d.x);
+	scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), r, 14, 8);
+
 	// alive
 	return false;
 }
@@ -278,20 +298,34 @@ void PlayerBullet::Init(xx::Shared<Player> owner_, float radians_, float radius_
 {
 	owner = owner_;
 	scene = owner_->scene;
-	pos = owner_->pos; // todo: add shoot distance
+	radians = radians_;
+	auto cos = std::cos(radians_);
+	auto sin = std::sin(radians_);
 	radius = radius_;
 	speed = speed_;
-	//moveInc = 
+	//auto r2 = owner_->radius;// + radius_;
+	pos = owner_->pos;// + XY{cos * r2, sin * r2};
+	moveInc = {cos * speed_, sin * speed_};
+
+	lifeEndTime = scene->time + Scene::framePerSeconds * 3;
 }
 
 bool PlayerBullet::Update()
 {
+	if (lifeEndTime < scene->time) return true;
+	pos += moveInc;
+	// todo: hit check
 	return false;
 }
 
-int PlayerBullet::Draw(double& x, double& y, double& rx, double& rz)
+int PlayerBullet::Draw(double& x, double& y, double& rx, double& rz, double& s)
 {
-	return 0;
+	x = (double)(pos.x - Scene::gridCenter.x);
+	y = (double)(pos.y - Scene::gridCenter.y);
+	rz = radians * (180.f / xx::gPI) + 90.f;
+	rx = 90;
+	s = radius / unitRadius;
+	return frameIndex;
 }
 
 /****************************************************************************************************/

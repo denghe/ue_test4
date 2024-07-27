@@ -49,11 +49,14 @@ void AMyPawn::BeginPlay()
 	}
 
 	// input init 
-	const auto pc = Cast<APlayerController>(Controller);
+	pc = Cast<APlayerController>(Controller);
 	check(pc);
 	const auto ei = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pc->GetLocalPlayer());
 	check(ei);
 	ei->AddMappingContext(imc, 0);
+
+	// show mouse
+	pc->SetShowMouseCursor(true);
 
 	// UI init
 	check(hud_t);
@@ -73,7 +76,7 @@ void AMyPawn::BeginPlay()
 
 	// scene init
 	scene = std::make_unique<Scene>();
-	scene->screenMinX = -1100;	// todo: get from bp
+	scene->screenMinX = -1100; // todo: use RayPlaneIntersection calculate
 	scene->screenMaxX = 1100;
 	scene->screenMinY = -1000;
 	scene->screenMaxY = 300;
@@ -82,7 +85,7 @@ void AMyPawn::BeginPlay()
 	scene->rendererEffects = ((APaperGroupedSpriteActor*)renderers[2])->GetRenderComponent();
 	scene->papers = papers.GetData();
 	scene->papersCount = papers.Num();
-	scene->originalZ = originalZ;//GetTransform().GetLocation().Z;
+	scene->originalZ = originalZ; //GetTransform().GetLocation().Z;
 	scene->Init();
 }
 
@@ -90,10 +93,21 @@ void AMyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	hud->SetFps(1.f / DeltaTime);
+
+	// handle mouse input
+	pc->GetMousePosition(scene->mousePos.x, scene->mousePos.y);
+	scene->mouseIsReady = pc->DeprojectMousePositionToWorld(scene->mouseLocation, scene->mouseDirection);
+	if (scene->mouseIsReady)
+	{
+		auto p = FMath::RayPlaneIntersection(scene->mouseLocation, scene->mouseDirection,
+		                                     FPlane(FVector(0, 0, 0), FVector::UpVector));
+		scene->mouseGridPos.x = p.X + scene->gridCenter.x;
+		scene->mouseGridPos.y = p.Y + scene->gridCenter.y;
+	}
+
 	scene->Update(DeltaTime);
 	scene->Draw();
-	// camera follow player
-	SetActorLocation({scene->camX, scene->camY, originalZ});
+	SetActorLocation({scene->camX, scene->camY, originalZ}); // camera follow player
 }
 
 void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

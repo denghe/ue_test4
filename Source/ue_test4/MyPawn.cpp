@@ -82,7 +82,7 @@ void AMyPawn::BeginPlay()
 	scene->rendererEffects = ((APaperGroupedSpriteActor*)renderers[2])->GetRenderComponent();
 	scene->papers = papers.GetData();
 	scene->papersCount = papers.Num();
-	scene->originalZ = GetTransform().GetLocation().Z;
+	scene->originalZ = originalZ;//GetTransform().GetLocation().Z;
 	scene->Init();
 }
 

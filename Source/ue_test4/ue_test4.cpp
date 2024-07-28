@@ -132,7 +132,8 @@ void Scene::Init()
 	// create monsters by search data
 	for (auto& i : srdd.idxs)
 	{
-		monsters.EmplaceInit(this, XY{gridCenter.x + (float)i.x * 8, gridCenter.y + (float)i.y * 8}, 14, 2);
+		monsters.EmplaceInit(this, XY{gridCenter.x + (float)i.x * 14, gridCenter.y + (float)i.y * 14}, 14, 2);
+		//if (monsters.Count() >= 1000) break;	// limit for test
 	}
 }
 
@@ -313,8 +314,19 @@ void PlayerBullet::Init(xx::Shared<Player> owner_, float radians_, float radius_
 bool PlayerBullet::Update()
 {
 	if (lifeEndTime < scene->time) return true;
+
+	// hit check
+	auto m = scene->monsters.FindFirstCrossBy9(pos.x, pos.y, radius);
+	if (m)
+	{
+		// todo: effect?
+		scene->monsters.Remove(*m);
+		return true;
+	}
+
 	pos += moveInc;
-	// todo: hit check
+	// todo: out of range check
+	
 	return false;
 }
 

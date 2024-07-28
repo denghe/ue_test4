@@ -40,7 +40,7 @@ void AMyPawn::BeginPlay()
 	// init display 
 	auto us = GEngine->GetGameUserSettings();
 	us->SetScreenResolution({1920, 1080});
-	us->SetFullscreenMode(EWindowMode::Type::Fullscreen);
+	us->SetFullscreenMode(EWindowMode::Type::Windowed);		// windows for debug break point
 	us->ApplySettings(false);
 	if (us->SupportsHDRDisplayOutput())
 	{

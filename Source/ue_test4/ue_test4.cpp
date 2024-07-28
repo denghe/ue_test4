@@ -132,7 +132,10 @@ void Scene::Init()
 	// create monsters by search data
 	for (auto& i : srdd.idxs)
 	{
-		monsters.EmplaceInit(this, XY{gridCenter.x + (float)i.x * 14, gridCenter.y + (float)i.y * 14}, 14, 2);
+		monsters.EmplaceInit(this, XY{
+			                     gridCenter.x + (float)i.x * Monster::unitRadius * 2,
+			                     gridCenter.y + (float)i.y * Monster::unitRadius * 2
+		                     }, Monster::unitRadius, 2);
 		//if (monsters.Count() >= 1000) break;	// limit for test
 	}
 }
@@ -214,7 +217,7 @@ void Scene::Log(std::string_view sv)
 void Player::Init(Scene* scene_, XY pos_, float radius_, float speed_)
 {
 	scene = scene_;
-	frameNum = scene->sprites_player.Num();
+	frameIndexMax = scene->sprites_player.Num();
 	pos = pos_;
 	radius = radius_;
 	speed = speed_;
@@ -236,9 +239,9 @@ bool Player::Update()
 
 		// step animation
 		frameIndex += 1.f / 5;
-		if (frameIndex >= frameNum)
+		if (frameIndex >= frameIndexMax)
 		{
-			frameIndex -= frameNum;
+			frameIndex -= frameIndexMax;
 		}
 
 		// todo: limit move range
@@ -270,7 +273,7 @@ void Player::Draw(FTransform& t)
 	t.SetLocation({x, y, scene->originalZ});
 	t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
 	t.SetScale3D({s, s, s});
-	scene->rendererChars->AddInstance(t, scene->sprites_player[(int)frameIndex], false, FLinearColor::Blue);
+	scene->rendererChars->AddInstance(t, scene->sprites_player[(int)frameIndex], false, FLinearColor::White);
 }
 
 /****************************************************************************************************/
@@ -336,7 +339,7 @@ void PlayerBullet::Draw(FTransform& t)
 void Monster::Init(Scene* scene_, XY pos_, float radius_, float speed_)
 {
 	scene = scene_;
-	frameIndexMax = scene->sprites_monster01.Num();
+	frameIndexMax = scene->sprites_monster03.Num();
 	pos = pos_;
 	radius = radius_;
 	speed = speed_;
@@ -427,7 +430,7 @@ void Monster::Draw(FTransform& t)
 	{
 		// auto secs = xx::NowEpochSeconds();
 		// scene->Log( xx::ToString( xx::NowEpochSeconds(secs) ));
-		
+
 		rz = 0;
 		rx = 0;
 		s = radius / unitRadius;
@@ -435,6 +438,6 @@ void Monster::Draw(FTransform& t)
 		t.SetLocation({x, y, scene->originalZ});
 		t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
 		t.SetScale3D({s, s, s});
-		scene->rendererChars->AddInstance(t, scene->sprites_monster01[(int)frameIndex], false, FLinearColor::White);
+		scene->rendererChars->AddInstance(t, scene->sprites_monster03[(int)frameIndex], false, FLinearColor::White);
 	}
 }

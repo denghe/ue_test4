@@ -268,7 +268,7 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32},
-	"pivot": {"x":0.5,"y":0.75}
+	"pivot": {"x":0.5,"y":1}
 },
 "glaring_overlord_2":
 {
@@ -277,7 +277,7 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32},
-	"pivot": {"x":0.5,"y":0.75}
+	"pivot": {"x":0.5,"y":1}
 },
 "glaring_overlord_3":
 {
@@ -286,7 +286,7 @@
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":30,"h":32},
 	"sourceSize": {"w":32,"h":32},
-	"pivot": {"x":0.5,"y":0.75}
+	"pivot": {"x":0.5,"y":1}
 },
 "glaring_overlord_4":
 {
@@ -295,7 +295,7 @@
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":30,"h":32},
 	"sourceSize": {"w":32,"h":32},
-	"pivot": {"x":0.5,"y":0.75}
+	"pivot": {"x":0.5,"y":1}
 },
 "glaring_overlord_5":
 {
@@ -304,7 +304,7 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32},
-	"pivot": {"x":0.5,"y":0.75}
+	"pivot": {"x":0.5,"y":1}
 },
 "glaring_overlord_6":
 {
@@ -313,7 +313,7 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32},
-	"pivot": {"x":0.5,"y":0.75}
+	"pivot": {"x":0.5,"y":1}
 },
 "glaring_overlord_7":
 {
@@ -322,7 +322,7 @@
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":30,"h":32},
 	"sourceSize": {"w":32,"h":32},
-	"pivot": {"x":0.5,"y":0.75}
+	"pivot": {"x":0.5,"y":1}
 },
 "glaring_overlord_8":
 {
@@ -331,7 +331,7 @@
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":30,"h":32},
 	"sourceSize": {"w":32,"h":32},
-	"pivot": {"x":0.5,"y":0.75}
+	"pivot": {"x":0.5,"y":1}
 },
 "gorilla_1":
 {
@@ -882,6 +882,6 @@
 	"size": {"w":256,"h":512},
 	"scale": "1",
 	"normal_map": "res_n.png",
-	"smartupdate": "$TexturePacker:SmartUpdate:fed449f0c2a9ec782ed724f80307261d:075ae7555b18849da5fd010979732cd9:eca0cfc93c958d43d7bf72d4dbd63b1e$"
+	"smartupdate": "$TexturePacker:SmartUpdate:b5a0f5ceed579a6e9ad789db3cb1f39f:075ae7555b18849da5fd010979732cd9:eca0cfc93c958d43d7bf72d4dbd63b1e$"
 }
 }

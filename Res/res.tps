@@ -259,6 +259,14 @@
             <key type="filename">pics/dragon_greatgold_6.png</key>
             <key type="filename">pics/dragon_greatgold_7.png</key>
             <key type="filename">pics/dragon_greatgold_8.png</key>
+            <key type="filename">pics/glaring_overlord_1.png</key>
+            <key type="filename">pics/glaring_overlord_2.png</key>
+            <key type="filename">pics/glaring_overlord_3.png</key>
+            <key type="filename">pics/glaring_overlord_4.png</key>
+            <key type="filename">pics/glaring_overlord_5.png</key>
+            <key type="filename">pics/glaring_overlord_6.png</key>
+            <key type="filename">pics/glaring_overlord_7.png</key>
+            <key type="filename">pics/glaring_overlord_8.png</key>
             <key type="filename">pics/gorilla_1.png</key>
             <key type="filename">pics/gorilla_2.png</key>
             <key type="filename">pics/gorilla_3.png</key>
@@ -412,28 +420,6 @@
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>8,8,16,16</rect>
-                <key>scale9Paddings</key>
-                <rect>8,8,16,16</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">pics/glaring_overlord_1.png</key>
-            <key type="filename">pics/glaring_overlord_2.png</key>
-            <key type="filename">pics/glaring_overlord_3.png</key>
-            <key type="filename">pics/glaring_overlord_4.png</key>
-            <key type="filename">pics/glaring_overlord_5.png</key>
-            <key type="filename">pics/glaring_overlord_6.png</key>
-            <key type="filename">pics/glaring_overlord_7.png</key>
-            <key type="filename">pics/glaring_overlord_8.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.75</point_f>
                 <key>spriteScale</key>
                 <double>1</double>
                 <key>scale9Enabled</key>

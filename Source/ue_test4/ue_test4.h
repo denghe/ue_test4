@@ -34,7 +34,7 @@ struct Player
 	Scene* scene{};
 
 	XY pos{};
-	float frameIndex{}, frameNum{}, speed{}, radius{};
+	float frameIndex{}, frameIndexMax{}, speed{}, radius{};
 	bool flipX{};
 
 	void Init(Scene* scene_, XY pos_, float radius_, float speed_);
@@ -66,7 +66,7 @@ struct PlayerBullet
 
 struct Monster
 {
-	static constexpr float unitRadius{14}; // scale = radius / unitRadius
+	static constexpr float unitRadius{12}; // scale = radius / unitRadius
 	Scene* scene{};
 
 	float frameIndex{}, frameIndexMax{};

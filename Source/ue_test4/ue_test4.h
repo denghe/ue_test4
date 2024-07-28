@@ -34,12 +34,12 @@ struct Player
 	Scene* scene{};
 
 	XY pos{};
+	float frameIndex{}, frameNum{}, speed{}, radius{};
 	bool flipX{};
-	float frameIndex{}, speed{}, radius{};
 
 	void Init(Scene* scene_, XY pos_, float radius_, float speed_);
 	bool Update();
-	int Draw(double& x, double& y, double& rx, double& rz, double& s);
+	void Draw(FTransform& t);
 };
 
 /****************************************************************************************************/
@@ -53,12 +53,12 @@ struct PlayerBullet
 	xx::Weak<Player> owner;
 
 	int lifeEndTime{};
-	float frameIndex{}, moveSpeed{}, radians{}, radius{}, speed{};
+	float moveSpeed{}, radians{}, radius{}, speed{};
 	XY pos{}, moveInc{};
 
 	void Init(xx::Shared<Player> owner_, float radians_, float radius_, float speed_);
 	bool Update();
-	int Draw(double& x, double& y, double& rx, double& rz, double& s);
+	void Draw(FTransform& t);
 };
 
 /****************************************************************************************************/
@@ -69,14 +69,14 @@ struct Monster
 	static constexpr float unitRadius{14}; // scale = radius / unitRadius
 	Scene* scene{};
 
-	float frameIndex{};
+	float frameIndex{}, frameIndexMax{};
 	float radius{};
 	float speed{};
 	XY pos{}, originalPos{}, lastPlayerPos{};
 
 	void Init(Scene* scene_, XY pos_, float radius_, float speed_);
 	bool Update();
-	int Draw(double& x, double& y, double& rx, double& rz, double& s);
+	void Draw(FTransform& t);
 };
 
 /****************************************************************************************************/
@@ -119,10 +119,22 @@ struct Scene
 
 	// fill these by pawm before call Init()
 	// args for Draw()
-	float screenMinX{}, screenMaxX{}, screenMinY{}, screenMaxY{};
+	float screenMinX_{}, screenMaxX_{}, screenMinY_{}, screenMaxY_{};		// offset
+	float screenMinX{}, screenMaxX{}, screenMinY{}, screenMaxY{};			// camXY + offset
 	UPaperGroupedSpriteComponent *rendererChars{}, *rendererBullets{}, *rendererEffects{};
-	UPaperSprite** papers{};
-	int papersCount{};
+	// sprite mappings( copy from Pawn )
+	TArray<UPaperSprite*> sprites_numbers;
+	TArray<UPaperSprite*> sprites_explosions;
+	TArray<UPaperSprite*> sprites_player;
+	TArray<UPaperSprite*> sprites_bullets;
+	TArray<UPaperSprite*> sprites_monster01;
+	TArray<UPaperSprite*> sprites_monster02;
+	TArray<UPaperSprite*> sprites_monster03;
+	TArray<UPaperSprite*> sprites_monster04;
+	TArray<UPaperSprite*> sprites_monster05;
+	TArray<UPaperSprite*> sprites_monster06;
+	TArray<UPaperSprite*> sprites_monster07;
+	TArray<UPaperSprite*> sprites_monster08;
 	float originalZ{};
 
 	// life cycle functions

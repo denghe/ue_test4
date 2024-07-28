@@ -76,16 +76,26 @@ void AMyPawn::BeginPlay()
 
 	// scene init
 	scene = std::make_unique<Scene>();
-	scene->screenMinX = -1100; // todo: use RayPlaneIntersection calculate
-	scene->screenMaxX = 1100;
-	scene->screenMinY = -1000;
-	scene->screenMaxY = 300;
+	scene->screenMinX_ = -1100; // todo: use RayPlaneIntersection calculate
+	scene->screenMaxX_ = 1100;
+	scene->screenMinY_ = -1000;
+	scene->screenMaxY_ = 300;
 	scene->rendererChars = ((APaperGroupedSpriteActor*)renderers[0])->GetRenderComponent();
 	scene->rendererBullets = ((APaperGroupedSpriteActor*)renderers[1])->GetRenderComponent();
 	scene->rendererEffects = ((APaperGroupedSpriteActor*)renderers[2])->GetRenderComponent();
-	scene->papers = papers.GetData();
-	scene->papersCount = papers.Num();
-	scene->originalZ = originalZ; //GetTransform().GetLocation().Z;
+	scene->sprites_numbers = sprites_numbers;
+	scene->sprites_explosions = sprites_explosions;
+	scene->sprites_player = sprites_player;
+	scene->sprites_bullets = sprites_bullets;
+	scene->sprites_monster01 = sprites_monster01;
+	scene->sprites_monster02 = sprites_monster02;
+	scene->sprites_monster03 = sprites_monster03;
+	scene->sprites_monster04 = sprites_monster04;
+	scene->sprites_monster05 = sprites_monster05;
+	scene->sprites_monster06 = sprites_monster06;
+	scene->sprites_monster07 = sprites_monster07;
+	scene->sprites_monster08 = sprites_monster08;
+	scene->originalZ = originalZ;
 	scene->Init();
 }
 

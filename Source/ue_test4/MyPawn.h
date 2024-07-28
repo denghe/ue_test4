@@ -24,28 +24,52 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UCameraComponent> camera;
 
+	// editor only
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UPaperSpriteComponent> sprite;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta=(MakeEditWidget=true))
-	TArray<UPaperSprite*> papers;
+	// sprite binds
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_numbers;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_explosions;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_player;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_bullets;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_monster01;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_monster02;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_monster03;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_monster04;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_monster05;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_monster06;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_monster07;
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
+	TArray<UPaperSprite*> sprites_monster08;
 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	float originalZ{};
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UMyUserWidget> hud_t;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere)
 	UInputMappingContext* imc;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere)
 	UInputAction* iaKBMoveUp;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere)
 	UInputAction* iaKBMoveDown;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere)
 	UInputAction* iaKBMoveLeft;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere)
 	UInputAction* iaKBMoveRight;
 
 	void InputHandle_KBMoveUpBegin(FInputActionValue const& av);

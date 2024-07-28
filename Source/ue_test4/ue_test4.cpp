@@ -178,56 +178,27 @@ void Scene::Draw()
 	rendererBullets->ClearInstances();
 	rendererEffects->ClearInstances();
 	FTransform t;
-	double x{}, y{}, rx{}, rz{}, s{};
-	
-	// calculate screen crop range
-	auto minX = camX + screenMinX;
-	auto maxX = camX + screenMaxX;
-	auto minY = camY + screenMinY;
-	auto maxY = camY + screenMaxY;
 
 	// draw player( do not need crop )
 	if (player)
 	{
-		const auto paperIndex = player->Draw(x, y, rx, rz, s);
-		t.SetLocation({x, y, originalZ});
-		t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
-		t.SetScale3D({s, s, s});
-		rendererChars->AddInstance(t, papers[paperIndex], false, FLinearColor::Blue);
-
-		// camera follow player
-		camX = x;
-		camY = y;
+		player->Draw(t);
 	}
+
+	// calculate screen crop range
+	screenMinX = camX + screenMinX_;
+	screenMaxX = camX + screenMaxX_;
+	screenMinY = camY + screenMinY_;
+	screenMaxY = camY + screenMaxY_;
 
 	monsters.Foreach([&](Monster& o)-> void
 	{
-		const auto paperIndex = o.Draw(x, y, rx, rz, s);
-		if (paperIndex >= 0)
-		{
-			if (!(x < minX || x > maxX || y < minY || y > maxY))
-			{
-				t.SetLocation({x, y, originalZ});
-				t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
-				t.SetScale3D({s, s, s});
-				rendererChars->AddInstance(t, papers[paperIndex], false, FLinearColor::White);
-			}
-		}
+		o.Draw(t);
 	});
-	
+
 	playerBullets.ForeachLink([&](PlayerBullet& o)-> void
 	{
-		const auto paperIndex = o.Draw(x, y, rx, rz, s);
-		if (paperIndex >= 0)
-		{
-			if (!(x < minX || x > maxX || y < minY || y > maxY))
-			{
-				t.SetLocation({x, y, originalZ});
-				t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
-				t.SetScale3D({s, s, s});
-				rendererBullets->AddInstance(t, papers[paperIndex], false, FLinearColor::White);
-			}
-		}
+		o.Draw(t);
 	});
 }
 
@@ -243,6 +214,7 @@ void Scene::Log(std::string_view sv)
 void Player::Init(Scene* scene_, XY pos_, float radius_, float speed_)
 {
 	scene = scene_;
+	frameNum = scene->sprites_player.Num();
 	pos = pos_;
 	radius = radius_;
 	speed = speed_;
@@ -264,9 +236,9 @@ bool Player::Update()
 
 		// step animation
 		frameIndex += 1.f / 5;
-		if (frameIndex >= 10)
+		if (frameIndex >= frameNum)
 		{
-			frameIndex -= 10;
+			frameIndex -= frameNum;
 		}
 
 		// todo: limit move range
@@ -281,15 +253,24 @@ bool Player::Update()
 	return false;
 }
 
-int Player::Draw(double& x, double& y, double& rx, double& rz, double& s)
+void Player::Draw(FTransform& t)
 {
+	double x, y, rx, rz, s;
 	x = (double)(pos.x - Scene::gridCenter.x);
 	y = (double)(pos.y - Scene::gridCenter.y);
 	if (flipX) rz = 180;
 	else rz = 0;
 	rx = 0;
 	s = radius / unitRadius;
-	return (int)frameIndex + 1;
+
+	// camera follow player
+	scene->camX = x;
+	scene->camY = y;
+
+	t.SetLocation({x, y, scene->originalZ});
+	t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
+	t.SetScale3D({s, s, s});
+	scene->rendererChars->AddInstance(t, scene->sprites_player[(int)frameIndex], false, FLinearColor::Blue);
 }
 
 /****************************************************************************************************/
@@ -305,7 +286,7 @@ void PlayerBullet::Init(xx::Shared<Player> owner_, float radians_, float radius_
 	radius = radius_;
 	speed = speed_;
 	//auto r2 = owner_->radius;// + radius_;
-	pos = owner_->pos;// + XY{cos * r2, sin * r2};
+	pos = owner_->pos; // + XY{cos * r2, sin * r2};
 	moveInc = {cos * speed_, sin * speed_};
 
 	lifeEndTime = scene->time + Scene::framePerSeconds * 3;
@@ -326,18 +307,27 @@ bool PlayerBullet::Update()
 
 	pos += moveInc;
 	// todo: out of range check
-	
+
 	return false;
 }
 
-int PlayerBullet::Draw(double& x, double& y, double& rx, double& rz, double& s)
+void PlayerBullet::Draw(FTransform& t)
 {
+	double x, y, rx, rz, s;
 	x = (double)(pos.x - Scene::gridCenter.x);
 	y = (double)(pos.y - Scene::gridCenter.y);
-	rz = radians * (180.f / xx::gPI) + 90.f;
-	rx = 90;
-	s = radius / unitRadius;
-	return frameIndex;
+
+	if (!(x < scene->screenMinX || x > scene->screenMaxX || y < scene->screenMinY || y > scene->screenMaxY))
+	{
+		rz = radians * (180.f / xx::gPI);
+		rx = 90;
+		s = radius / unitRadius;
+
+		t.SetLocation({x, y, scene->originalZ});
+		t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
+		t.SetScale3D({s, s, s});
+		scene->rendererBullets->AddInstance(t, scene->sprites_bullets[1], false, FLinearColor::White);
+	}
 }
 
 /****************************************************************************************************/
@@ -346,6 +336,7 @@ int PlayerBullet::Draw(double& x, double& y, double& rx, double& rz, double& s)
 void Monster::Init(Scene* scene_, XY pos_, float radius_, float speed_)
 {
 	scene = scene_;
+	frameIndexMax = scene->sprites_monster01.Num();
 	pos = pos_;
 	radius = radius_;
 	speed = speed_;
@@ -356,9 +347,9 @@ bool Monster::Update()
 {
 	// step animation
 	frameIndex += 1.f / 5;
-	if (frameIndex >= 10)
+	if (frameIndex >= frameIndexMax)
 	{
-		frameIndex -= 10;
+		frameIndex -= frameIndexMax;
 	}
 
 	// check player distance, avoidance
@@ -426,12 +417,24 @@ bool Monster::Update()
 	return false;
 }
 
-int Monster::Draw(double& x, double& y, double& rz, double& rx, double& s)
+void Monster::Draw(FTransform& t)
 {
+	double x, y, rx, rz, s;
 	x = (double)(pos.x - Scene::gridCenter.x);
 	y = (double)(pos.y - Scene::gridCenter.y);
-	rz = 0;
-	rx = 0;
-	s = radius / unitRadius;
-	return (int)frameIndex + 1;
+
+	if (!(x < scene->screenMinX || x > scene->screenMaxX || y < scene->screenMinY || y > scene->screenMaxY))
+	{
+		// auto secs = xx::NowEpochSeconds();
+		// scene->Log( xx::ToString( xx::NowEpochSeconds(secs) ));
+		
+		rz = 0;
+		rx = 0;
+		s = radius / unitRadius;
+
+		t.SetLocation({x, y, scene->originalZ});
+		t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
+		t.SetScale3D({s, s, s});
+		scene->rendererChars->AddInstance(t, scene->sprites_monster01[(int)frameIndex], false, FLinearColor::White);
+	}
 }

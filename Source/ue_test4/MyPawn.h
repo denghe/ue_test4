@@ -2,6 +2,7 @@
 
 #include "ue_test4.h"
 #include "GameFramework/Pawn.h"
+#include "_Scene.h"
 #include "MyPawn.generated.h"
 
 class UMyUserWidget;
@@ -30,7 +31,7 @@ public:
 
 	// sprite binds
 	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
-	TArray<UPaperSprite*> sprites_numbers;
+	TArray<UPaperSprite*> sprites_font;
 	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
 	TArray<UPaperSprite*> sprites_explosions;
 	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
@@ -53,10 +54,6 @@ public:
 	TArray<UPaperSprite*> sprites_monster07;
 	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
 	TArray<UPaperSprite*> sprites_monster08;
-
-
-	UPROPERTY(EditAnywhere)
-	float originalZ{};
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UMyUserWidget> hud_t;

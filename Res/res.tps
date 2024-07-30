@@ -173,6 +173,115 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">fonts/font_outline_100.png</key>
+            <key type="filename">fonts/font_outline_101.png</key>
+            <key type="filename">fonts/font_outline_102.png</key>
+            <key type="filename">fonts/font_outline_103.png</key>
+            <key type="filename">fonts/font_outline_104.png</key>
+            <key type="filename">fonts/font_outline_105.png</key>
+            <key type="filename">fonts/font_outline_106.png</key>
+            <key type="filename">fonts/font_outline_107.png</key>
+            <key type="filename">fonts/font_outline_108.png</key>
+            <key type="filename">fonts/font_outline_109.png</key>
+            <key type="filename">fonts/font_outline_110.png</key>
+            <key type="filename">fonts/font_outline_111.png</key>
+            <key type="filename">fonts/font_outline_112.png</key>
+            <key type="filename">fonts/font_outline_113.png</key>
+            <key type="filename">fonts/font_outline_114.png</key>
+            <key type="filename">fonts/font_outline_115.png</key>
+            <key type="filename">fonts/font_outline_116.png</key>
+            <key type="filename">fonts/font_outline_117.png</key>
+            <key type="filename">fonts/font_outline_118.png</key>
+            <key type="filename">fonts/font_outline_119.png</key>
+            <key type="filename">fonts/font_outline_120.png</key>
+            <key type="filename">fonts/font_outline_121.png</key>
+            <key type="filename">fonts/font_outline_122.png</key>
+            <key type="filename">fonts/font_outline_123.png</key>
+            <key type="filename">fonts/font_outline_124.png</key>
+            <key type="filename">fonts/font_outline_125.png</key>
+            <key type="filename">fonts/font_outline_126.png</key>
+            <key type="filename">fonts/font_outline_32.png</key>
+            <key type="filename">fonts/font_outline_33.png</key>
+            <key type="filename">fonts/font_outline_34.png</key>
+            <key type="filename">fonts/font_outline_35.png</key>
+            <key type="filename">fonts/font_outline_36.png</key>
+            <key type="filename">fonts/font_outline_37.png</key>
+            <key type="filename">fonts/font_outline_38.png</key>
+            <key type="filename">fonts/font_outline_39.png</key>
+            <key type="filename">fonts/font_outline_40.png</key>
+            <key type="filename">fonts/font_outline_41.png</key>
+            <key type="filename">fonts/font_outline_42.png</key>
+            <key type="filename">fonts/font_outline_43.png</key>
+            <key type="filename">fonts/font_outline_44.png</key>
+            <key type="filename">fonts/font_outline_45.png</key>
+            <key type="filename">fonts/font_outline_46.png</key>
+            <key type="filename">fonts/font_outline_47.png</key>
+            <key type="filename">fonts/font_outline_48.png</key>
+            <key type="filename">fonts/font_outline_49.png</key>
+            <key type="filename">fonts/font_outline_50.png</key>
+            <key type="filename">fonts/font_outline_51.png</key>
+            <key type="filename">fonts/font_outline_52.png</key>
+            <key type="filename">fonts/font_outline_53.png</key>
+            <key type="filename">fonts/font_outline_54.png</key>
+            <key type="filename">fonts/font_outline_55.png</key>
+            <key type="filename">fonts/font_outline_56.png</key>
+            <key type="filename">fonts/font_outline_57.png</key>
+            <key type="filename">fonts/font_outline_58.png</key>
+            <key type="filename">fonts/font_outline_59.png</key>
+            <key type="filename">fonts/font_outline_60.png</key>
+            <key type="filename">fonts/font_outline_61.png</key>
+            <key type="filename">fonts/font_outline_62.png</key>
+            <key type="filename">fonts/font_outline_63.png</key>
+            <key type="filename">fonts/font_outline_64.png</key>
+            <key type="filename">fonts/font_outline_65.png</key>
+            <key type="filename">fonts/font_outline_66.png</key>
+            <key type="filename">fonts/font_outline_67.png</key>
+            <key type="filename">fonts/font_outline_68.png</key>
+            <key type="filename">fonts/font_outline_69.png</key>
+            <key type="filename">fonts/font_outline_70.png</key>
+            <key type="filename">fonts/font_outline_71.png</key>
+            <key type="filename">fonts/font_outline_72.png</key>
+            <key type="filename">fonts/font_outline_73.png</key>
+            <key type="filename">fonts/font_outline_74.png</key>
+            <key type="filename">fonts/font_outline_75.png</key>
+            <key type="filename">fonts/font_outline_76.png</key>
+            <key type="filename">fonts/font_outline_77.png</key>
+            <key type="filename">fonts/font_outline_78.png</key>
+            <key type="filename">fonts/font_outline_79.png</key>
+            <key type="filename">fonts/font_outline_80.png</key>
+            <key type="filename">fonts/font_outline_81.png</key>
+            <key type="filename">fonts/font_outline_82.png</key>
+            <key type="filename">fonts/font_outline_83.png</key>
+            <key type="filename">fonts/font_outline_84.png</key>
+            <key type="filename">fonts/font_outline_85.png</key>
+            <key type="filename">fonts/font_outline_86.png</key>
+            <key type="filename">fonts/font_outline_87.png</key>
+            <key type="filename">fonts/font_outline_88.png</key>
+            <key type="filename">fonts/font_outline_89.png</key>
+            <key type="filename">fonts/font_outline_90.png</key>
+            <key type="filename">fonts/font_outline_91.png</key>
+            <key type="filename">fonts/font_outline_92.png</key>
+            <key type="filename">fonts/font_outline_93.png</key>
+            <key type="filename">fonts/font_outline_94.png</key>
+            <key type="filename">fonts/font_outline_95.png</key>
+            <key type="filename">fonts/font_outline_96.png</key>
+            <key type="filename">fonts/font_outline_97.png</key>
+            <key type="filename">fonts/font_outline_98.png</key>
+            <key type="filename">fonts/font_outline_99.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0,1</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>2,3,5,7</rect>
+                <key>scale9Paddings</key>
+                <rect>2,3,5,7</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">pics/bullet_1.png</key>
             <key type="filename">pics/bullet_2.png</key>
             <key type="filename">pics/bullet_5.png</key>
@@ -431,30 +540,6 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">pics/number_outlined_0.png</key>
-            <key type="filename">pics/number_outlined_1.png</key>
-            <key type="filename">pics/number_outlined_2.png</key>
-            <key type="filename">pics/number_outlined_3.png</key>
-            <key type="filename">pics/number_outlined_4.png</key>
-            <key type="filename">pics/number_outlined_5.png</key>
-            <key type="filename">pics/number_outlined_6.png</key>
-            <key type="filename">pics/number_outlined_7.png</key>
-            <key type="filename">pics/number_outlined_8.png</key>
-            <key type="filename">pics/number_outlined_9.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0,1</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>2,2,4,4</rect>
-                <key>scale9Paddings</key>
-                <rect>2,2,4,4</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
         </map>
         <key>fileLists</key>
         <map type="SpriteSheetMap">
@@ -525,16 +610,6 @@
                     <filename>pics/moose_6.png</filename>
                     <filename>pics/moose_7.png</filename>
                     <filename>pics/moose_8.png</filename>
-                    <filename>pics/number_outlined_0.png</filename>
-                    <filename>pics/number_outlined_1.png</filename>
-                    <filename>pics/number_outlined_2.png</filename>
-                    <filename>pics/number_outlined_3.png</filename>
-                    <filename>pics/number_outlined_4.png</filename>
-                    <filename>pics/number_outlined_5.png</filename>
-                    <filename>pics/number_outlined_6.png</filename>
-                    <filename>pics/number_outlined_7.png</filename>
-                    <filename>pics/number_outlined_8.png</filename>
-                    <filename>pics/number_outlined_9.png</filename>
                     <filename>pics/rearing_nightmare_1.png</filename>
                     <filename>pics/rearing_nightmare_2.png</filename>
                     <filename>pics/rearing_nightmare_3.png</filename>
@@ -646,6 +721,101 @@
                     <filename>pics_n/venomous_chimera_6_n.png</filename>
                     <filename>pics_n/venomous_chimera_7_n.png</filename>
                     <filename>pics_n/venomous_chimera_8_n.png</filename>
+                    <filename>fonts/font_outline_100.png</filename>
+                    <filename>fonts/font_outline_101.png</filename>
+                    <filename>fonts/font_outline_102.png</filename>
+                    <filename>fonts/font_outline_103.png</filename>
+                    <filename>fonts/font_outline_104.png</filename>
+                    <filename>fonts/font_outline_105.png</filename>
+                    <filename>fonts/font_outline_106.png</filename>
+                    <filename>fonts/font_outline_107.png</filename>
+                    <filename>fonts/font_outline_108.png</filename>
+                    <filename>fonts/font_outline_109.png</filename>
+                    <filename>fonts/font_outline_110.png</filename>
+                    <filename>fonts/font_outline_111.png</filename>
+                    <filename>fonts/font_outline_112.png</filename>
+                    <filename>fonts/font_outline_113.png</filename>
+                    <filename>fonts/font_outline_114.png</filename>
+                    <filename>fonts/font_outline_115.png</filename>
+                    <filename>fonts/font_outline_116.png</filename>
+                    <filename>fonts/font_outline_117.png</filename>
+                    <filename>fonts/font_outline_118.png</filename>
+                    <filename>fonts/font_outline_119.png</filename>
+                    <filename>fonts/font_outline_120.png</filename>
+                    <filename>fonts/font_outline_121.png</filename>
+                    <filename>fonts/font_outline_122.png</filename>
+                    <filename>fonts/font_outline_123.png</filename>
+                    <filename>fonts/font_outline_124.png</filename>
+                    <filename>fonts/font_outline_125.png</filename>
+                    <filename>fonts/font_outline_126.png</filename>
+                    <filename>fonts/font_outline_32.png</filename>
+                    <filename>fonts/font_outline_33.png</filename>
+                    <filename>fonts/font_outline_34.png</filename>
+                    <filename>fonts/font_outline_35.png</filename>
+                    <filename>fonts/font_outline_36.png</filename>
+                    <filename>fonts/font_outline_37.png</filename>
+                    <filename>fonts/font_outline_38.png</filename>
+                    <filename>fonts/font_outline_39.png</filename>
+                    <filename>fonts/font_outline_40.png</filename>
+                    <filename>fonts/font_outline_41.png</filename>
+                    <filename>fonts/font_outline_42.png</filename>
+                    <filename>fonts/font_outline_43.png</filename>
+                    <filename>fonts/font_outline_44.png</filename>
+                    <filename>fonts/font_outline_45.png</filename>
+                    <filename>fonts/font_outline_46.png</filename>
+                    <filename>fonts/font_outline_47.png</filename>
+                    <filename>fonts/font_outline_48.png</filename>
+                    <filename>fonts/font_outline_49.png</filename>
+                    <filename>fonts/font_outline_50.png</filename>
+                    <filename>fonts/font_outline_51.png</filename>
+                    <filename>fonts/font_outline_52.png</filename>
+                    <filename>fonts/font_outline_53.png</filename>
+                    <filename>fonts/font_outline_54.png</filename>
+                    <filename>fonts/font_outline_55.png</filename>
+                    <filename>fonts/font_outline_56.png</filename>
+                    <filename>fonts/font_outline_57.png</filename>
+                    <filename>fonts/font_outline_58.png</filename>
+                    <filename>fonts/font_outline_59.png</filename>
+                    <filename>fonts/font_outline_60.png</filename>
+                    <filename>fonts/font_outline_61.png</filename>
+                    <filename>fonts/font_outline_62.png</filename>
+                    <filename>fonts/font_outline_63.png</filename>
+                    <filename>fonts/font_outline_64.png</filename>
+                    <filename>fonts/font_outline_65.png</filename>
+                    <filename>fonts/font_outline_66.png</filename>
+                    <filename>fonts/font_outline_67.png</filename>
+                    <filename>fonts/font_outline_68.png</filename>
+                    <filename>fonts/font_outline_69.png</filename>
+                    <filename>fonts/font_outline_70.png</filename>
+                    <filename>fonts/font_outline_71.png</filename>
+                    <filename>fonts/font_outline_72.png</filename>
+                    <filename>fonts/font_outline_73.png</filename>
+                    <filename>fonts/font_outline_74.png</filename>
+                    <filename>fonts/font_outline_75.png</filename>
+                    <filename>fonts/font_outline_76.png</filename>
+                    <filename>fonts/font_outline_77.png</filename>
+                    <filename>fonts/font_outline_78.png</filename>
+                    <filename>fonts/font_outline_79.png</filename>
+                    <filename>fonts/font_outline_80.png</filename>
+                    <filename>fonts/font_outline_81.png</filename>
+                    <filename>fonts/font_outline_82.png</filename>
+                    <filename>fonts/font_outline_83.png</filename>
+                    <filename>fonts/font_outline_84.png</filename>
+                    <filename>fonts/font_outline_85.png</filename>
+                    <filename>fonts/font_outline_86.png</filename>
+                    <filename>fonts/font_outline_87.png</filename>
+                    <filename>fonts/font_outline_88.png</filename>
+                    <filename>fonts/font_outline_89.png</filename>
+                    <filename>fonts/font_outline_90.png</filename>
+                    <filename>fonts/font_outline_91.png</filename>
+                    <filename>fonts/font_outline_92.png</filename>
+                    <filename>fonts/font_outline_93.png</filename>
+                    <filename>fonts/font_outline_94.png</filename>
+                    <filename>fonts/font_outline_95.png</filename>
+                    <filename>fonts/font_outline_96.png</filename>
+                    <filename>fonts/font_outline_97.png</filename>
+                    <filename>fonts/font_outline_98.png</filename>
+                    <filename>fonts/font_outline_99.png</filename>
                 </array>
             </struct>
         </map>

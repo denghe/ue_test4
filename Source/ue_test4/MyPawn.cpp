@@ -83,7 +83,7 @@ void AMyPawn::BeginPlay()
 	scene->rendererChars = ((APaperGroupedSpriteActor*)renderers[0])->GetRenderComponent();
 	scene->rendererBullets = ((APaperGroupedSpriteActor*)renderers[1])->GetRenderComponent();
 	scene->rendererEffects = ((APaperGroupedSpriteActor*)renderers[2])->GetRenderComponent();
-	scene->sprites_numbers = sprites_numbers;
+	scene->sprites_font = sprites_font;
 	scene->sprites_explosions = sprites_explosions;
 	scene->sprites_player = sprites_player;
 	scene->sprites_bullets = sprites_bullets;
@@ -95,7 +95,6 @@ void AMyPawn::BeginPlay()
 	scene->sprites_monster06 = sprites_monster06;
 	scene->sprites_monster07 = sprites_monster07;
 	scene->sprites_monster08 = sprites_monster08;
-	scene->originalZ = originalZ;
 	scene->Init();
 }
 
@@ -117,7 +116,7 @@ void AMyPawn::Tick(float DeltaTime)
 
 	scene->Update(DeltaTime);
 	scene->Draw();
-	SetActorLocation({scene->camX, scene->camY, originalZ}); // camera follow player
+	SetActorLocation({scene->camX, scene->camY, 0}); // camera follow player
 }
 
 void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

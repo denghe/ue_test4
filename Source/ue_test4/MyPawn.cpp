@@ -30,6 +30,10 @@ AMyPawn::AMyPawn()
 
 	sprite = CreateDefaultSubobject<UPaperSpriteComponent>("sprite");
 	sprite->SetupAttachment(RootComponent);
+
+
+	// todo: replace all paper sprites's default material ?
+	// /Script/Engine.MaterialInstanceConstant'/Paper2D/MaskedLitSpriteMaterial.MaskedLitSpriteMaterial'
 }
 
 void AMyPawn::BeginPlay()
@@ -73,6 +77,10 @@ void AMyPawn::BeginPlay()
 	TArray<AActor*> renderers;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaperGroupedSpriteActor::StaticClass(), renderers);
 	check(renderers.Num() >= 3);
+	for(auto& r : renderers)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, r->GetName());
+	}
 
 	// scene init
 	scene = std::make_unique<Scene>();
@@ -117,6 +125,9 @@ void AMyPawn::Tick(float DeltaTime)
 	scene->Update(DeltaTime);
 	scene->Draw();
 	SetActorLocation({scene->camX, scene->camY, 0}); // camera follow player
+
+
+	//scene->Log( xx::ToString(scene->rendererEffects->GetNumMaterials()) );
 }
 
 void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

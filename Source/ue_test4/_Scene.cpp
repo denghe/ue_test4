@@ -153,16 +153,16 @@ void Scene::Update(float delta)
 				player.Reset();
 			}
 
-			// generate some effect numbers for test
-			for (int i = 0; i < 150; ++i)
-			{
-				auto p = player->pos;
-				auto x = p.x + rnd.Next<float>(-Cfg::designSize_2.x, Cfg::designSize_2.x);
-				auto y = p.y + rnd.Next<float>(-designSize_2.y, Cfg::designSize_2.y);
-				auto v = rnd.Next<double>() * std::pow(10., rnd.Next<int>(2, 300 - 10));
-				effectNumbers.Emplace().Init(this, x, y, 1, v, rnd.Next<bool>());
-			}
-			Log(xx::ToString("effectNumbers.len = ", effectNumbers.len));
+			// // generate some effect numbers for test
+			// for (int i = 0; i < 150; ++i)
+			// {
+			// 	auto p = player->pos;
+			// 	auto x = p.x + rnd.Next<float>(-Cfg::designSize_2.x, Cfg::designSize_2.x);
+			// 	auto y = p.y + rnd.Next<float>(-designSize_2.y, Cfg::designSize_2.y);
+			// 	auto v = rnd.Next<double>() * std::pow(10., rnd.Next<int>(2, 300 - 10));
+			// 	effectNumbers.Emplace().Init(this, x, y, 1, v, rnd.Next<bool>());
+			// }
+			//Log(xx::ToString("effectNumbers.len = ", effectNumbers.len));
 		}
 
 		monsters.Foreach([this](Monster& o)-> xx::ForeachResult

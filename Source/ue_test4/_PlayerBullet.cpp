@@ -25,6 +25,9 @@ bool PlayerBullet::Update()
 	if (m)
 	{
 		// todo: effect?
+		auto v = scene->rnd.Next<double>() * std::pow(10., scene->rnd.Next<int>(2, 300 - 10));
+		scene->effectNumbers.Emplace().Init(scene, m->pos.x, m->pos.y, 1, v, scene->rnd.Next<bool>());
+		
 		scene->monsters.Remove(*m);
 		return true;
 	}

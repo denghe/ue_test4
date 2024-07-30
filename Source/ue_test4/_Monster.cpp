@@ -96,7 +96,7 @@ void Monster::Draw(FTransform& t)
 		// scene->Log( xx::ToString( xx::NowEpochSeconds(secs) ));
 
 		rz = 0;
-		rx = 0;
+		rx = -45;
 		s = radius / unitRadius;
 
 		t.SetLocation({x, y, 0});

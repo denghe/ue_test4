@@ -73,21 +73,17 @@ void AMyPawn::BeginPlay()
 	sprite->DestroyComponent();
 	sprite = {};
 
-	// locate renderers
+	// locate renderers( order by create time )
 	TArray<AActor*> renderers;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APaperGroupedSpriteActor::StaticClass(), renderers);
 	check(renderers.Num() >= 3);
-	for(auto& r : renderers)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, r->GetName());
-	}
+	// for(auto& r : renderers)
+	// {
+	// 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, r->GetName());
+	// }
 
 	// scene init
 	scene = std::make_unique<Scene>();
-	scene->screenMinX_ = -1100; // todo: use RayPlaneIntersection calculate
-	scene->screenMaxX_ = 1100;
-	scene->screenMinY_ = -1000;
-	scene->screenMaxY_ = 300;
 	scene->rendererChars = ((APaperGroupedSpriteActor*)renderers[0])->GetRenderComponent();
 	scene->rendererBullets = ((APaperGroupedSpriteActor*)renderers[1])->GetRenderComponent();
 	scene->rendererEffects = ((APaperGroupedSpriteActor*)renderers[2])->GetRenderComponent();
@@ -109,7 +105,6 @@ void AMyPawn::BeginPlay()
 void AMyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	hud->SetFps(1.f / DeltaTime);
 
 	// handle mouse input
 	pc->GetMousePosition(scene->mousePos.x, scene->mousePos.y);
@@ -123,11 +118,35 @@ void AMyPawn::Tick(float DeltaTime)
 	}
 
 	scene->Update(DeltaTime);
-	scene->Draw();
-	SetActorLocation({scene->camX, scene->camY, 0}); // camera follow player
 
+	scene->screenMinY = scene->camY + screenMinY;
+	scene->screenMaxY = scene->camY + screenMaxY;
+	scene->screenWidth = screenWidth;
+	scene->screenGradient = screenGradient;
+	
+	scene->Draw();
+
+	// camera follow player
+	SetActorLocation({scene->camX, scene->camY, 0});
 
 	//scene->Log( xx::ToString(scene->rendererEffects->GetNumMaterials()) );
+
+	++drawCounter;
+	auto nowSecs = xx::NowEpochSeconds();
+	if (auto elapsedSecs = nowSecs - lastSecs; elapsedSecs >= 1) {
+		lastSecs = nowSecs;
+		hud->SetFps(drawCounter / elapsedSecs);
+		drawCounter = 0;
+
+		scene->Log( xx::ToString( "num monsters = ", scene->monsters.Count()
+			, " ( ", scene->rendererChars->GetInstanceCount()
+			," displayed ) num bullets =  ", scene->playerBullets.Count()
+			, " ( ", scene->rendererBullets->GetInstanceCount()
+			," displayed ) num numbers =  ", scene->effectNumbers.Count()
+			, " ( ", scene->rendererEffects->GetInstanceCount()
+			," displayed )"
+			) );
+	}
 }
 
 void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -151,6 +170,18 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		eic->BindAction(iaKBMoveRight, ETriggerEvent::Started, this, &AMyPawn::InputHandle_KBMoveRightBegin);
 		eic->BindAction(iaKBMoveRight, ETriggerEvent::Canceled, this, &AMyPawn::InputHandle_KBMoveRightEnd);
 		eic->BindAction(iaKBMoveRight, ETriggerEvent::Completed, this, &AMyPawn::InputHandle_KBMoveRightEnd);
+
+		// eic->BindAction(ia????, ETriggerEvent::Started, this, &AMyPawn::InputHandle_GPMoveBegin);
+		// eic->BindAction(ia????, ETriggerEvent::Canceled, this, &AMyPawn::InputHandle_GPMoveEnd);
+		// eic->BindAction(ia????, ETriggerEvent::Completed, this, &AMyPawn::InputHandle_GPMoveEnd);
+
+		eic->BindAction(iaMBtn1, ETriggerEvent::Started, this, &AMyPawn::InputHandle_MBtn1Begin);
+		eic->BindAction(iaMBtn1, ETriggerEvent::Canceled, this, &AMyPawn::InputHandle_MBtn1End);
+		eic->BindAction(iaMBtn1, ETriggerEvent::Completed, this, &AMyPawn::InputHandle_MBtn1End);
+		
+		eic->BindAction(iaMBtn2, ETriggerEvent::Started, this, &AMyPawn::InputHandle_MBtn2Begin);
+		eic->BindAction(iaMBtn2, ETriggerEvent::Canceled, this, &AMyPawn::InputHandle_MBtn2End);
+		eic->BindAction(iaMBtn2, ETriggerEvent::Completed, this, &AMyPawn::InputHandle_MBtn2End);
 	}
 }
 
@@ -216,4 +247,24 @@ void AMyPawn::InputHandle_GPMoveEnd(FInputActionValue const& av)
 	scene->playerUsingKeyboard = false;
 	scene->playerMoving = false;
 	scene->playerMoveValue = {};
+};
+
+void AMyPawn::InputHandle_MBtn1Begin(FInputActionValue const& av)
+{
+	scene->mouseBtn1Pressed = true;
+};
+
+void AMyPawn::InputHandle_MBtn1End(FInputActionValue const& av)
+{
+	scene->mouseBtn1Pressed = false;
+};
+
+void AMyPawn::InputHandle_MBtn2Begin(FInputActionValue const& av)
+{
+	scene->mouseBtn2Pressed = true;
+};
+
+void AMyPawn::InputHandle_MBtn2End(FInputActionValue const& av)
+{
+	scene->mouseBtn2Pressed = false;
 };

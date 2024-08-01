@@ -68,6 +68,10 @@ public:
 	UInputAction* iaKBMoveLeft;
 	UPROPERTY(EditAnywhere)
 	UInputAction* iaKBMoveRight;
+	UPROPERTY(EditAnywhere)
+	UInputAction* iaMBtn1;
+	UPROPERTY(EditAnywhere)
+	UInputAction* iaMBtn2;
 
 	void InputHandle_KBMoveUpBegin(FInputActionValue const& av);
 	void InputHandle_KBMoveUpEnd(FInputActionValue const& av);
@@ -83,10 +87,27 @@ public:
 
 	void InputHandle_GPMoveBegin(FInputActionValue const& av);
 	void InputHandle_GPMoveEnd(FInputActionValue const& av);
+	
+	void InputHandle_MBtn1Begin(FInputActionValue const& av);
+	void InputHandle_MBtn1End(FInputActionValue const& av);
+
+	void InputHandle_MBtn2Begin(FInputActionValue const& av);
+	void InputHandle_MBtn2End(FInputActionValue const& av);
+
+	// for crop( base on arm len 500, cam fov 90 )
+	UPROPERTY(EditAnywhere)
+	float screenMinY{-1100};
+	UPROPERTY(EditAnywhere)
+	float screenMaxY{300};
+	UPROPERTY(EditAnywhere)
+	float screenWidth{1300};
+	UPROPERTY(EditAnywhere)
+	float screenGradient{0.7};
 
 	APlayerController* pc{};
 	TObjectPtr<UMyUserWidget> hud;
 	std::unique_ptr<Scene> scene;
+	double lastSecs{}, drawCounter{};
 
 	AMyPawn();
 	virtual void BeginPlay() override;

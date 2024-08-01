@@ -84,8 +84,8 @@ struct Monster
 
 struct EffectNumber
 {
-	static constexpr float incZ{50.f / Cfg::framePerSeconds};
-	static constexpr int life{int(0.5 * Cfg::framePerSeconds)};
+	static constexpr float incZ{30.f / Cfg::framePerSeconds};
+	static constexpr int life{int(0.8 * Cfg::framePerSeconds)};
 	Scene* scene{};
 
 	UPaperSprite* sprites[12];
@@ -115,8 +115,9 @@ struct Scene : Cfg
 	FVector mouseLocation, mouseDirection;
 	XY mousePos{}, mouseGridPos{};
 	bool mouseIsReady{};
+	bool mouseBtn1Pressed{}, mouseBtn2Pressed{};
 
-	// input states
+	// keyboard & joy input states
 	bool playerUsingKeyboard{}, playerMoving{};
 	bool playerKBMovingUp{}, playerKBMovingDown{}, playerKBMovingLeft{}, playerKBMovingRight{};
 	XY playerMoveValue{}, playerDirection{1, 0};
@@ -133,8 +134,7 @@ struct Scene : Cfg
 
 	// fill these by pawm before call Init()
 	// args for Draw()
-	float screenMinX_{}, screenMaxX_{}, screenMinY_{}, screenMaxY_{}; // offset
-	float screenMinX{}, screenMaxX{}, screenMinY{}, screenMaxY{}; // camXY + offset
+	float screenWidth{}, screenGradient{}, screenMinY{}, screenMaxY{};
 	UPaperGroupedSpriteComponent *rendererChars{}, *rendererBullets{}, *rendererEffects{};
 	// sprite mappings( copy from Pawn )
 	TArray<UPaperSprite*> sprites_font;

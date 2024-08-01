@@ -204,12 +204,6 @@ void Scene::Draw()
 		player->Draw(t);
 	}
 
-	// calculate screen crop range
-	screenMinX = camX + screenMinX_;
-	screenMaxX = camX + screenMaxX_;
-	screenMinY = camY + screenMinY_;
-	screenMaxY = camY + screenMaxY_;
-
 	monsters.Foreach([&](Monster& o)-> void
 	{
 		o.Draw(t);
@@ -231,5 +225,5 @@ void Scene::Draw()
 void Scene::Log(std::string_view sv)
 {
 	FString fs(sv.data(), sv.size());
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, fs);
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, fs, true, {1.5, 1.5});
 }

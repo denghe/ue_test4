@@ -91,8 +91,7 @@ void Monster::Draw(FTransform& t)
 	y = (double)(pos.y - Scene::gridCenter.y);
 
 	
-	//if (!(x < scene->screenMinX || x > scene->screenMaxX || y < scene->screenMinY || y > scene->screenMaxY))
-	if (!(y < scene->screenMinY || y > scene->screenMaxY) && 1200 - std::abs(x - scene->camX) > (y - scene->screenMinY) * 0.68)
+	if (!(y < scene->screenMinY || y > scene->screenMaxY) && scene->screenWidth - std::abs(x - scene->camX) > (y - scene->screenMinY) * scene->screenGradient)
 	{
 		// auto secs = xx::NowEpochSeconds();
 		// scene->Log( xx::ToString( xx::NowEpochSeconds(secs) ));

@@ -33,10 +33,23 @@ bool Player::Update()
 		// todo: limit move range
 	}
 
-	// todo: shoot
-	auto d = scene->mouseGridPos - pos;
-	auto r = std::atan2(d.y, d.x);
-	scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), r, 14, 8);
+	// simple shoot
+	if (scene->mouseBtn1Pressed)
+	{
+		auto d = scene->mouseGridPos - pos;
+		auto r = std::atan2(d.y, d.x);
+		scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), r, 14, 8);
+	}
+
+	if (scene->mouseBtn2Pressed)
+	{
+		auto d = scene->mouseGridPos - pos;
+		auto r = std::atan2(d.y, d.x);
+		for (int i = 0; i < 100; ++i)
+		{
+			scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), r, 14, 8);
+		}
+	}
 
 	// alive
 	return false;

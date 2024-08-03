@@ -54,6 +54,8 @@ public:
 	TArray<UPaperSprite*> sprites_monster07;
 	UPROPERTY(EditAnywhere, meta=(MakeEditWidget=true))
 	TArray<UPaperSprite*> sprites_monster08;
+	UPROPERTY(EditAnywhere)
+	UPaperSprite* sprite_point;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UMyUserWidget> hud_t;
@@ -104,6 +106,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float screenGradient{0.7};
 
+	ASceneCapture2D* sceneCapture2D{}; 
 	APlayerController* pc{};
 	TObjectPtr<UMyUserWidget> hud;
 	std::unique_ptr<Scene> scene;

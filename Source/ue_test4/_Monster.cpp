@@ -90,12 +90,8 @@ void Monster::Draw(FTransform& t)
 	x = (double)(pos.x - Scene::gridCenter.x);
 	y = (double)(pos.y - Scene::gridCenter.y);
 
-	
 	if (!(y < scene->screenMinY || y > scene->screenMaxY) && scene->screenWidth - std::abs(x - scene->camX) > (y - scene->screenMinY) * scene->screenGradient)
 	{
-		// auto secs = xx::NowEpochSeconds();
-		// scene->Log( xx::ToString( xx::NowEpochSeconds(secs) ));
-
 		rz = 0;
 		rx = -45;
 		s = radius / unitRadius;
@@ -105,4 +101,17 @@ void Monster::Draw(FTransform& t)
 		t.SetScale3D({s, s, s});
 		scene->rendererChars->AddInstance(t, scene->sprites_monster03[(int)frameIndex], false, FLinearColor::White);
 	}
+
+	if (x > scene->miniMinX && x < scene->miniMaxX && y > scene->miniMinY && y < scene->miniMaxY)
+	{
+		rz = 0;
+		rx = 90;
+		s = 2;
+		
+		t.SetLocation({x, y, 0});
+		t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));
+		t.SetScale3D({s, s, s});
+		scene->rendererMinimap->AddInstance(t, scene->sprite_point, false, FLinearColor::Red);
+	}
+
 }

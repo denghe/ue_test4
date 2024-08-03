@@ -135,7 +135,8 @@ struct Scene : Cfg
 	// fill these by pawm before call Init()
 	// args for Draw()
 	float screenWidth{}, screenGradient{}, screenMinY{}, screenMaxY{};
-	UPaperGroupedSpriteComponent *rendererChars{}, *rendererBullets{}, *rendererEffects{};
+	float miniMinX{}, miniMaxX{}, miniMinY{}, miniMaxY{};
+	UPaperGroupedSpriteComponent *rendererChars{}, *rendererBullets{}, *rendererEffects{}, *rendererMinimap{};
 	// sprite mappings( copy from Pawn )
 	TArray<UPaperSprite*> sprites_font;
 	TArray<UPaperSprite*> sprites_explosions;
@@ -149,6 +150,7 @@ struct Scene : Cfg
 	TArray<UPaperSprite*> sprites_monster06;
 	TArray<UPaperSprite*> sprites_monster07;
 	TArray<UPaperSprite*> sprites_monster08;
+	UPaperSprite* sprite_point;
 
 	// life cycle functions
 	void Init();

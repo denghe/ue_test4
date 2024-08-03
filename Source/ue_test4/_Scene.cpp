@@ -196,6 +196,7 @@ void Scene::Draw()
 	rendererChars->ClearInstances();
 	rendererBullets->ClearInstances();
 	rendererEffects->ClearInstances();
+	rendererMinimap->ClearInstances();
 	FTransform t;
 
 	// draw player( do not need crop )
@@ -220,6 +221,7 @@ void Scene::Draw()
 	}
 
 	// ...
+	//Log(xx::ToString( "rendererMinimap->GetInstanceCount() = ", rendererMinimap->GetInstanceCount() ));
 }
 
 void Scene::Log(std::string_view sv)

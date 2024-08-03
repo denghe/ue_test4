@@ -48,11 +48,11 @@ void AMyPawn::BeginPlay()
 	us->SetScreenResolution({1920, 1080});
 	us->SetFullscreenMode(EWindowMode::Type::Windowed); // windows for debug break point
 	us->ApplySettings(false);
-	if (us->SupportsHDRDisplayOutput())
-	{
-		//us->EnableHDRDisplayOutput(true);	// not working...
-		GEngine->Exec(w, TEXT("r.HDR.EnableHDROutput 1")); // ok
-	}
+	// if (us->SupportsHDRDisplayOutput())
+	// {
+	// 	//us->EnableHDRDisplayOutput(true);	// not working...
+	// 	GEngine->Exec(w, TEXT("r.HDR.EnableHDROutput 1")); // ok
+	// }
 
 	// input init 
 	pc = Cast<APlayerController>(Controller);

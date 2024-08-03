@@ -1,6 +1,6 @@
 #include "_Scene.h"
 
-void PlayerBullet::Init(xx::Shared<Player> owner_, float radians_, float radius_, float speed_)
+void PlayerBullet::Init(xx::Shared<Player> owner_, float radians_, float radius_, float speed_, float distance_)
 {
 	owner = owner_;
 	scene = owner_->scene;
@@ -9,8 +9,7 @@ void PlayerBullet::Init(xx::Shared<Player> owner_, float radians_, float radius_
 	auto sin = std::sin(radians_);
 	radius = radius_;
 	speed = speed_;
-	//auto r2 = owner_->radius;// + radius_;
-	pos = owner_->pos; // + XY{cos * r2, sin * r2};
+	pos = owner_->pos + XY{cos, sin} * distance_;
 	moveInc = {cos * speed_, sin * speed_};
 
 	lifeEndTime = scene->time + Scene::framePerSeconds * 3;

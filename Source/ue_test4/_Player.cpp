@@ -33,21 +33,35 @@ bool Player::Update()
 		// todo: limit move range
 	}
 
-	// simple shoot
+	auto bak = radians;
+	auto d = scene->mouseGridPos - pos;
+	radians = xx::RotateControl::LerpAngleByFixed(std::atan2(d.y, d.x), radians, frameMaxChangeRadian);
+	
+	// small shoot
+	constexpr float bulletSpeed = 16;
 	if (scene->mouseBtn1Pressed)
 	{
-		auto d = scene->mouseGridPos - pos;
-		auto r = std::atan2(d.y, d.x);
-		scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), r, 14, 8);
+		scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), radians, 14, bulletSpeed, bulletSpeed);
 	}
 
+	// big shoot
 	if (scene->mouseBtn2Pressed)
 	{
-		auto d = scene->mouseGridPos - pos;
-		auto r = std::atan2(d.y, d.x);
-		for (int i = 0; i < 100; ++i)
+		auto rd = bak - radians;
+		if (rd >= xx::gPI)
 		{
-			scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), r, 14, 8);
+			rd -= xx::g2PI;
+		}
+		else if (rd < xx::gNPI)
+		{
+			rd += xx::g2PI;
+		}
+		constexpr int shootCount = 100;		// shoot count
+		auto radiansStep = rd / shootCount;	// linear angle
+		for (int i = 0; i < shootCount; ++i)
+		{
+			scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), radians + radiansStep * i, 14
+			                                    , bulletSpeed, bulletSpeed / shootCount * i);
 		}
 	}
 

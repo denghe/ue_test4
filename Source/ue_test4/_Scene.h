@@ -16,7 +16,7 @@ struct Cfg // Scene : Cfg
 	static constexpr XY designSize{ 1920, 1080 };
 	static constexpr XY designSize_2{ designSize / 2 };
 	
-	static constexpr int framePerSeconds{60};
+	static constexpr int framePerSeconds{60}, fps = framePerSeconds;
 	static constexpr float frameDelaySeconds{1.f / framePerSeconds};
 	static constexpr int cellSize{32};
 	static constexpr int numRows{4096};
@@ -31,10 +31,11 @@ struct Cfg // Scene : Cfg
 struct Player
 {
 	static constexpr float unitRadius{14}; // scale = radius / unitRadius
+	constexpr static float frameMaxChangeRadian{ float(M_PI * 10 / Cfg::fps) };
 	Scene* scene{};
 
 	XY pos{};
-	float frameIndex{}, frameIndexMax{}, speed{}, radius{};
+	float frameIndex{}, frameIndexMax{}, speed{}, radius{}, radians{};
 	bool flipX{};
 
 	void Init(Scene* scene_, XY pos_, float radius_, float speed_);
@@ -56,7 +57,7 @@ struct PlayerBullet
 	float moveSpeed{}, radians{}, radius{}, speed{};
 	XY pos{}, moveInc{};
 
-	void Init(xx::Shared<Player> owner_, float radians_, float radius_, float speed_);
+	void Init(xx::Shared<Player> owner_, float radians_, float radius_, float speed_, float distance_);
 	bool Update();
 	void Draw(FTransform& t);
 };

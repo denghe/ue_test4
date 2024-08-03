@@ -19,8 +19,8 @@ struct Cfg // Scene : Cfg
 	static constexpr int framePerSeconds{60};
 	static constexpr float frameDelaySeconds{1.f / framePerSeconds};
 	static constexpr int cellSize{32};
-	static constexpr int numRows{512};
-	static constexpr int numCols{512};
+	static constexpr int numRows{4096};
+	static constexpr int numCols{4096};
 	static constexpr XY gridSize{numCols * cellSize, numRows * cellSize};
 	static constexpr XY gridCenter{gridSize / 2};
 };
@@ -77,6 +77,7 @@ struct Monster
 	void Init(Scene* scene_, XY pos_, float radius_, float speed_);
 	bool Update();
 	void Draw(FTransform& t);
+	void DrawMini(FTransform& t);
 };
 
 /****************************************************************************************************/

@@ -123,16 +123,16 @@ void Scene::Init()
 	// }
 
 	// space index search data init
-	srdd.Init(numRows / 2, cellSize);
+	srdd.Init(std::min(256, numRows / 2), cellSize);
 
 	// create monsters by search data
 	for (auto& i : srdd.idxs)
 	{
 		monsters.EmplaceInit(this, XY{
-			                     gridCenter.x + (float)i.x * Monster::unitRadius * 2,
-			                     gridCenter.y + (float)i.y * Monster::unitRadius * 2
+			                     gridCenter.x + (float)i.x * Monster::unitRadius * 3,
+			                     gridCenter.y + (float)i.y * Monster::unitRadius * 3
 		                     }, Monster::unitRadius, 2);
-		//if (monsters.Count() >= 1000) break;	// limit for test
+		//if (monsters.Count() >= 50000) break;	// limit for test
 	}
 }
 
@@ -163,14 +163,25 @@ void Scene::Update(float delta)
 			// 	effectNumbers.Emplace().Init(this, x, y, 1, v, rnd.Next<bool>());
 			// }
 			//Log(xx::ToString("effectNumbers.len = ", effectNumbers.len));
-		}
 
-		monsters.Foreach([this](Monster& o)-> xx::ForeachResult
-		{
-			if (o.Update()) return xx::ForeachResult::RemoveAndContinue;
-			monsters.Update(o);
-			return xx::ForeachResult::Continue;
-		});
+#if 0
+			// slowly when too many items?
+			monsters.Foreach([this](Monster& o)-> xx::ForeachResult
+			{
+				if (o.Update()) return xx::ForeachResult::RemoveAndContinue;
+				monsters.Update(o);
+				return xx::ForeachResult::Continue;
+			});
+#else
+			// faster?
+			monsters.ForeachByRange(srdd, player->pos.x, player->pos.y, 1400, [this](Monster& o)-> xx::ForeachResult
+			{
+				if (o.Update()) return xx::ForeachResult::RemoveAndContinue;
+				monsters.Update(o);
+				return xx::ForeachResult::Continue;
+			});
+#endif
+		}
 
 		playerBullets.ForeachLink([](PlayerBullet& o)-> xx::ForeachResult
 		{
@@ -196,7 +207,10 @@ void Scene::Draw()
 	rendererChars->ClearInstances();
 	rendererBullets->ClearInstances();
 	rendererEffects->ClearInstances();
-	rendererMinimap->ClearInstances();
+	if (((time & 2) == 0))
+	{
+		rendererMinimap->ClearInstances();
+	}
 	FTransform t;
 
 	// draw player( do not need crop )
@@ -205,10 +219,22 @@ void Scene::Draw()
 		player->Draw(t);
 	}
 
+#if 0
 	monsters.Foreach([&](Monster& o)-> void
 	{
 		o.Draw(t);
+		o.DrawMini(t);
 	});
+#else
+	monsters.ForeachByRange(srdd, player->pos.x, player->pos.y, 1400, [&](Monster& o)-> void
+	{
+		o.Draw(t);
+	});
+	monsters.ForeachByRange(srdd, player->pos.x, player->pos.y, 3000, [&](Monster& o)-> void
+	{
+		o.DrawMini(t);
+	});
+#endif
 
 	playerBullets.ForeachLink([&](PlayerBullet& o)-> void
 	{

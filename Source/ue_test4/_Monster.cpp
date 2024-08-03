@@ -26,7 +26,7 @@ bool Monster::Update()
 		auto dxx = d.x * d.x;
 		auto dyy = d.y * d.y;
 		auto dd = dxx + dyy;
-		auto r2 = radius * 3 + player->radius;
+		auto r2 = radius * 4 + player->radius;
 		if (dd < r2 * r2)
 		{
 			if (dd < std::numeric_limits<float>::epsilon()) // avoid SQRT == 0
@@ -101,8 +101,15 @@ void Monster::Draw(FTransform& t)
 		t.SetScale3D({s, s, s});
 		scene->rendererChars->AddInstance(t, scene->sprites_monster03[(int)frameIndex], false, FLinearColor::White);
 	}
+}
 
-	if (x > scene->miniMinX && x < scene->miniMaxX && y > scene->miniMinY && y < scene->miniMaxY)
+void Monster::DrawMini(FTransform& t)
+{
+	double x, y, rx, rz, s;
+	x = (double)(pos.x - Scene::gridCenter.x);
+	y = (double)(pos.y - Scene::gridCenter.y);
+
+	if (((scene->time & 2) == 0) && x > scene->miniMinX && x < scene->miniMaxX && y > scene->miniMinY && y < scene->miniMaxY)
 	{
 		rz = 0;
 		rx = 90;
@@ -113,5 +120,4 @@ void Monster::Draw(FTransform& t)
 		t.SetScale3D({s, s, s});
 		scene->rendererMinimap->AddInstance(t, scene->sprite_point, false, FLinearColor::Red);
 	}
-
 }

@@ -71,7 +71,7 @@ namespace xx
 		using ST::TryGet;
 
 		int32_t numRows{}, numCols{}, cellSize{};
-		float _1_cellSize{}; // = 1 / cellSize
+		double _1_cellSize{}; // = 1 / cellSize
 		XYi max{};
 
 	protected:
@@ -86,7 +86,7 @@ namespace xx
 			numRows = numRows_;
 			numCols = numCols_;
 			cellSize = cellSize_;
-			_1_cellSize = 1.f / cellSize_;
+			_1_cellSize = 1. / cellSize_;
 			max.x = cellSize_ * numCols_;
 			max.y = cellSize_ * numRows_;
 
@@ -214,6 +214,7 @@ namespace xx
 			o.cidx = cidx;
 		}
 
+		// very slowly when row cells large size
 		// foreach by flags ( copy ForeachFlags to here )
 		// .Foreach([](T& o)->void {    });
 		// .Foreach([](T& o)->xx::ForeachResult {    });
@@ -264,51 +265,6 @@ namespace xx
 					}
 				}
 			}
-		}
-
-		// .Foreach9([](T& o)->void {  all  });
-		// .Foreach([](T& o)->bool {  break  });
-		// .Foreach([](T& o)->xx::ForeachResult {    });
-		// return is Break or RemoveAndBreak
-		template <typename F, typename R = std::invoke_result_t<F, T&>>
-		XX_FORCE_INLINE bool ForeachCell(int32_t cidx, F&& func)
-		{
-			auto idx = cells[cidx];
-			while (idx >= 0)
-			{
-				auto& o = ST::RefNode(idx);
-				auto nex = o.nex;
-				if constexpr (std::is_void_v<R>)
-				{
-					func(o.value);
-				}
-				else
-				{
-					auto r = func(o.value);
-					if constexpr (std::is_same_v<R, bool>)
-					{
-						if (r) return true;
-					}
-					else
-					{
-						switch (r)
-						{
-						case ForeachResult::Continue: break;
-						case ForeachResult::RemoveAndContinue:
-							Free(o);
-							break;
-						case ForeachResult::Break: return true;
-						case ForeachResult::RemoveAndBreak:
-							Free(o);
-							return true;
-						default:
-							XX_ASSUME(false);
-						}
-					}
-				}
-				idx = nex;
-			}
-			return false;
 		}
 
 		XX_FORCE_INLINE int32_t PosToCIdx(XYf const& p)
@@ -370,97 +326,213 @@ namespace xx
 			return &ST::RefNode(idx).value;
 		}
 
-		constexpr static std::array<XYi, 9> offsets9 = {
-			XYi
-			{0, 0},
-			{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}
-		};
+		// // .Foreach9([](T& o)->void {  all  });
+		// // .Foreach([](T& o)->bool {  break  });
+		// // .Foreach([](T& o)->xx::ForeachResult {    });
+		// // return is Break or RemoveAndBreak
+		// template <typename F, typename R = std::invoke_result_t<F, T&>>
+		// XX_FORCE_INLINE bool ForeachCell(int32_t cidx, F&& func)
+		// {
+		// 	auto idx = cells[cidx];
+		// 	while (idx >= 0)
+		// 	{
+		// 		auto& o = ST::RefNode(idx);
+		// 		auto nex = o.nex;
+		// 		if constexpr (std::is_void_v<R>)
+		// 		{
+		// 			func(o.value);
+		// 		}
+		// 		else
+		// 		{
+		// 			auto r = func(o.value);
+		// 			if constexpr (std::is_same_v<R, bool>)
+		// 			{
+		// 				if (r) return true;
+		// 			}
+		// 			else
+		// 			{
+		// 				switch (r)
+		// 				{
+		// 				case ForeachResult::Continue: break;
+		// 				case ForeachResult::RemoveAndContinue:
+		// 					Free(o);
+		// 					break;
+		// 				case ForeachResult::Break: return true;
+		// 				case ForeachResult::RemoveAndBreak:
+		// 					Free(o);
+		// 					return true;
+		// 				default:
+		// 					XX_ASSUME(false);
+		// 				}
+		// 			}
+		// 		}
+		// 		idx = nex;
+		// 	}
+		// 	return false;
+		// }
 
-		// foreach target cell + round 8 = 9 cells
-		// .Foreach9([](T& o)->void {  all  });
-		// .Foreach9([](T& o)->bool {  break  });
-		// .Foreach9([](T& o)->xx::ForeachResult {    });
+		
+		// constexpr static std::array<XYi, 9> offsets9 = {
+		// 	XYi
+		// 	{0, 0},
+		// 	{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}
+		// };
+		//
+		// // foreach target cell + round 8 = 9 cells
+		// // .Foreach9([](T& o)->void {  all  });
+		// // .Foreach9([](T& o)->bool {  break  });
+		// // .Foreach9([](T& o)->xx::ForeachResult {    });
+		// template <typename F, typename R = std::invoke_result_t<F, T&>>
+		// void Foreach9(XYf const& pos, F&& func)
+		// {
+		// 	auto crIdxBase = PosToCrIdx(pos);
+		// 	for (auto offset : offsets9)
+		// 	{
+		// 		auto crIdx = crIdxBase + offset;
+		// 		if (crIdx.x < 0 || crIdx.x >= numCols) continue;
+		// 		if (crIdx.y < 0 || crIdx.y >= numRows) continue;
+		// 		auto cidx = CrIdxToCIdx(crIdx);
+		//
+		// 		auto idx = cells[cidx];
+		// 		while (idx >= 0)
+		// 		{
+		// 			auto& o = ST::RefNode(idx);
+		// 			auto nex = o.nex;
+		// 			if constexpr (std::is_void_v<R>)
+		// 			{
+		// 				func(o.value);
+		// 			}
+		// 			else
+		// 			{
+		// 				auto r = func(o.value);
+		// 				if constexpr (std::is_same_v<R, bool>)
+		// 				{
+		// 					if (r) return;
+		// 				}
+		// 				else
+		// 				{
+		// 					switch (r)
+		// 					{
+		// 					case ForeachResult::Continue: break;
+		// 					case ForeachResult::RemoveAndContinue:
+		// 						Free(o);
+		// 						break;
+		// 					case ForeachResult::Break: return;
+		// 					case ForeachResult::RemoveAndBreak:
+		// 						Free(o);
+		// 						return;
+		// 					default:
+		// 						XX_ASSUME(false);
+		// 					}
+		// 				}
+		// 			}
+		// 			idx = nex;
+		// 		}
+		// 	}
+		// }
+
+		// // can't break
+		// template <typename F, typename R = std::invoke_result_t<F, T&>>
+		// void ForeachByRange(SpaceRingDiffuseData const& d, XYf const& pos, float maxDistance, F&& func)
+		// {
+		// 	auto crIdxBase = PosToCrIdx(pos); // calc grid col row index
+		// 	float rr = maxDistance * maxDistance;
+		// 	auto& lens = d.lens;
+		// 	auto& idxs = d.idxs;
+		// 	for (int i = 1; i < lens.len; i++)
+		// 	{
+		// 		auto offsets = &idxs[lens[i - 1].count];
+		// 		auto size = lens[i].count - lens[i - 1].count;
+		//
+		// 		for (int j = 0; j < size; ++j)
+		// 		{
+		// 			auto crIdx = crIdxBase + offsets[j];
+		// 			if (crIdx.x < 0 || crIdx.x >= numCols) continue;
+		// 			if (crIdx.y < 0 || crIdx.y >= numRows) continue;
+		// 			auto cidx = CrIdxToCIdx(crIdx);
+		// 			ForeachCell(cidx, [&](T& m)-> void
+		// 			{
+		// 				auto v = m.pos - pos;
+		// 				if (v.x * v.x + v.y * v.y < rr)
+		// 				{
+		// 					func(m); // todo: check func's args. send v, rr to func ?
+		// 				}
+		// 			});
+		// 		}
+		//
+		// 		if (lens[i].radius > maxDistance) break; // limit search range
+		// 	}
+		// }
+
+
+		// ring diffuse foreach ( usually for update logic )
 		template <typename F, typename R = std::invoke_result_t<F, T&>>
-		void Foreach9(XYf const& pos, F&& func)
+		void ForeachByRange(SpaceRingDiffuseData const& d, float x, float y, float maxDistance, F&& func)
 		{
-			auto crIdxBase = PosToCrIdx(pos);
-			for (auto offset : offsets9)
-			{
-				auto crIdx = crIdxBase + offset;
-				if (crIdx.x < 0 || crIdx.x >= numCols) continue;
-				if (crIdx.y < 0 || crIdx.y >= numRows) continue;
-				auto cidx = CrIdxToCIdx(crIdx);
+			int cIdxBase = (int)(x * _1_cellSize);
+			if (cIdxBase < 0 || cIdxBase >= numCols) return;
+			int rIdxBase = (int)(y * _1_cellSize);
+			if (rIdxBase < 0 || rIdxBase >= numRows) return;
+			auto searchRange = maxDistance + cellSize;
 
-				auto idx = cells[cidx];
-				while (idx >= 0)
+			auto& lens = d.lens;
+			auto& idxs = d.idxs;
+			for (int i = 1, e = lens.len; i < e; i++)
+			{
+				auto offsets = lens[i - 1].count;
+				auto size = lens[i].count - lens[i - 1].count;
+				for (int j = 0; j < size; ++j)
 				{
-					auto& o = ST::RefNode(idx);
-					auto nex = o.nex;
-					if constexpr (std::is_void_v<R>)
+					auto& tmp = idxs[offsets + j];
+					auto cIdx = cIdxBase + tmp.x;
+					if (cIdx < 0 || cIdx >= numCols) continue;
+					auto rIdx = rIdxBase + tmp.y;
+					if (rIdx < 0 || rIdx >= numRows) continue;
+					auto cidx = rIdx * numCols + cIdx;
+
+					auto idx = cells[cidx];
+					while (idx >= 0)
 					{
-						func(o.value);
-					}
-					else
-					{
-						auto r = func(o.value);
-						if constexpr (std::is_same_v<R, bool>)
+						auto& c = ST::RefNode(idx);
+						auto& o = c.value;
+
+						if constexpr (std::is_void_v<R>)
 						{
-							if (r) return;
+							func(o);
 						}
 						else
 						{
-							switch (r)
+							auto r = func(o);
+							if constexpr (std::is_same_v<R, bool>)
 							{
-							case ForeachResult::Continue: break;
-							case ForeachResult::RemoveAndContinue:
-								Free(o);
-								break;
-							case ForeachResult::Break: return;
-							case ForeachResult::RemoveAndBreak:
-								Free(o);
-								return;
-							default:
-								XX_ASSUME(false);
+								if (r) return;
+							}
+							else
+							{
+								switch (r)
+								{
+								case ForeachResult::Continue: break;
+								case ForeachResult::RemoveAndContinue:
+									Free(c);
+									break;
+								case ForeachResult::Break: return;
+								case ForeachResult::RemoveAndBreak:
+									Free(c);
+									return;
+								default:
+									XX_ASSUME(false);
+								}
 							}
 						}
+
+						idx = c.nex;
 					}
-					idx = nex;
 				}
+				if (lens[i].radius > searchRange) break;
 			}
 		}
 
-		// can't break
-		template <typename F, typename R = std::invoke_result_t<F, T&>>
-		void ForeachByRange(SpaceRingDiffuseData const& d, XYf const& pos, float maxDistance, F&& func)
-		{
-			auto crIdxBase = PosToCrIdx(pos); // calc grid col row index
-			float rr = maxDistance * maxDistance;
-			auto& lens = d.lens;
-			auto& idxs = d.idxs;
-			for (int i = 1; i < lens.len; i++)
-			{
-				auto offsets = &idxs[lens[i - 1].count];
-				auto size = lens[i].count - lens[i - 1].count;
-
-				for (int j = 0; j < size; ++j)
-				{
-					auto crIdx = crIdxBase + offsets[j];
-					if (crIdx.x < 0 || crIdx.x >= numCols) continue;
-					if (crIdx.y < 0 || crIdx.y >= numRows) continue;
-					auto cidx = CrIdxToCIdx(crIdx);
-					ForeachCell(cidx, [&](T& m)-> void
-					{
-						auto v = m.pos - pos;
-						if (v.x * v.x + v.y * v.y < rr)
-						{
-							func(m); // todo: check func's args. send v, rr to func ?
-						}
-					});
-				}
-
-				if (lens[i].radius > maxDistance) break; // limit search range
-			}
-		}
+		
 
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/
@@ -1026,7 +1098,7 @@ namespace xx
 
 		// ring diffuse search   nearest edge   best one and return
 		// required: float T::radius
-		T* FindNearestByRange(SpaceRingDiffuseData d, float x, float y, float maxDistance)
+		T* FindNearestByRange(SpaceRingDiffuseData const& d, float x, float y, float maxDistance)
 		{
 			int cIdxBase = (int)(x * _1_cellSize);
 			if (cIdxBase < 0 || cIdxBase >= numCols) return nullptr;
@@ -1085,7 +1157,7 @@ namespace xx
 		// ring diffuse search   nearest edge   best N and return
 		// maxDistance: search limit( edge distance )
 		// required: float T::radius
-		int FindNearestNByRange(SpaceRingDiffuseData d, float x, float y, float maxDistance, int n)
+		int FindNearestNByRange(SpaceRingDiffuseData const& d, float x, float y, float maxDistance, int n)
 		{
 			int cIdxBase = (int)(x * _1_cellSize);
 			if (cIdxBase < 0 || cIdxBase >= numCols) return 0;

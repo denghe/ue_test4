@@ -81,7 +81,7 @@ void AMyPawn::BeginPlay()
 	check(renderers.Num() >= 4);
 	for (int i = 0, e = renderers.Num(); i < e; ++i)
 	{
-		auto r = (APaperGroupedSpriteActor*)renderers[i];	// GetActorName for editor only
+		auto r = (APaperGroupedSpriteActor*)renderers[i]; // GetActorName for editor only
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, r->GetName(), true, {1.5, 1.5});
 	}
 
@@ -133,25 +133,28 @@ void AMyPawn::Tick(float DeltaTime)
 		scene->mouseGridPos.y = p.Y + scene->gridCenter.y;
 	}
 
+	auto bak = scene->time;
 	scene->Update(DeltaTime);
+	if (bak != scene->time)
+	{
+		scene->screenMinY = scene->camY + screenMinY;
+		scene->screenMaxY = scene->camY + screenMaxY;
+		scene->screenWidth = screenWidth;
+		scene->screenGradient = screenGradient;
 
-	scene->screenMinY = scene->camY + screenMinY;
-	scene->screenMaxY = scene->camY + screenMaxY;
-	scene->screenWidth = screenWidth;
-	scene->screenGradient = screenGradient;
+		scene->miniMinX = scene->camX - 2000;
+		scene->miniMaxX = scene->camX + 2000;
+		scene->miniMinY = scene->camY - 2000;
+		scene->miniMaxY = scene->camY + 2000;
 
-	scene->miniMinX = scene->camX - 2000;
-	scene->miniMaxX = scene->camX + 2000;
-	scene->miniMinY = scene->camY - 2000;
-	scene->miniMaxY = scene->camY + 2000;
-	
-	scene->Draw();
+		scene->Draw();
 
-	// camera follow player
-	SetActorLocation({scene->camX, scene->camY, 0});
-	sceneCapture2D->SetActorLocation({scene->camX, scene->camY, 300});
+		// camera follow player
+		SetActorLocation({scene->camX, scene->camY, 0});
+		sceneCapture2D->SetActorLocation({scene->camX, scene->camY, 300});
 
-	//scene->Log( xx::ToString(scene->rendererEffects->GetNumMaterials()) );
+		//scene->Log( xx::ToString(scene->rendererEffects->GetNumMaterials()) );
+	}
 
 	++drawCounter;
 	auto nowSecs = xx::NowEpochSeconds();

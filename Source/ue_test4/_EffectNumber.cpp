@@ -30,7 +30,7 @@ void EffectNumber::Draw(FTransform& t)
 	x = (double)(pos.x - Cfg::gridCenter.x);
 	y = (double)(pos.y - Cfg::gridCenter.y);
 	rz = 0;
-	rx = -45;
+	rx = -15;
 	s = this->scale;
 	FLinearColor c;
 	if (criticalHit)

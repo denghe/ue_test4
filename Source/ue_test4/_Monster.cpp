@@ -93,7 +93,7 @@ void Monster::Draw(FTransform& t)
 	if (!(y < scene->screenMinY || y > scene->screenMaxY) && scene->screenWidth - std::abs(x - scene->camX) > (y - scene->screenMinY) * scene->screenGradient)
 	{
 		rz = 0;
-		rx = -45;
+		rx = -15;
 		s = radius / unitRadius;
 
 		t.SetLocation({x, y, 0});

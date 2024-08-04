@@ -96,15 +96,15 @@ public:
 	void InputHandle_MBtn2Begin(FInputActionValue const& av);
 	void InputHandle_MBtn2End(FInputActionValue const& av);
 
-	// for crop( base on arm len 500, cam fov 90 )
+	// for crop( base on spring arm angle -45, len 1300, cam fov 45 )
 	UPROPERTY(EditAnywhere)
-	float screenMinY{-1100};
+	float screenMinY{-600};
 	UPROPERTY(EditAnywhere)
-	float screenMaxY{300};
+	float screenMaxY{400};
 	UPROPERTY(EditAnywhere)
-	float screenWidth{1300};
+	float screenWidth{700};
 	UPROPERTY(EditAnywhere)
-	float screenGradient{0.7};
+	float screenGradient{0.25};
 
 	ASceneCapture2D* sceneCapture2D{}; 
 	APlayerController* pc{};

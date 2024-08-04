@@ -30,15 +30,17 @@ struct Cfg // Scene : Cfg
 
 struct Player
 {
-	static constexpr float unitRadius{14}; // scale = radius / unitRadius
-	constexpr static float frameMaxChangeRadian{ float(M_PI * 10 / Cfg::fps) };
+	static constexpr float cUnitRadius{14}; // scale = radius / unitRadius
+	static constexpr float cMoveSpeed{5};
+	static constexpr int cBigShootBulletCount{50};
+	static constexpr float cFrameMaxChangeRadian{ float(M_PI * 10 / Cfg::fps) };
 	Scene* scene{};
 
 	XY pos{};
-	float frameIndex{}, frameIndexMax{}, speed{}, radius{}, radians{};
+	float frameIndex{}, frameIndexMax{}, moveSpeed{}, radius{}, radians{};
 	bool flipX{};
 
-	void Init(Scene* scene_, XY pos_, float radius_, float speed_);
+	void Init(Scene* scene_, XY pos_, float radius_);
 	bool Update();
 	void Draw(FTransform& t);
 };
@@ -49,7 +51,9 @@ struct Player
 // todo: aim by mouse & shoot 
 struct PlayerBullet
 {
-	static constexpr float unitRadius{14}; // scale = radius / unitRadius
+	static constexpr float cUnitRadius{14}; // scale = radius / unitRadius
+	static constexpr float cSpeed{7};
+	static constexpr int cLife{Cfg::fps * 3};
 	Scene* scene{};
 	xx::Weak<Player> owner;
 
@@ -57,7 +61,7 @@ struct PlayerBullet
 	float moveSpeed{}, radians{}, radius{}, speed{};
 	XY pos{}, moveInc{};
 
-	void Init(xx::Shared<Player> owner_, float radians_, float radius_, float speed_, float distance_);
+	void Init(xx::Shared<Player> owner_, float radians_, float radius_ = cUnitRadius, float distance_ = cSpeed);
 	bool Update();
 	void Draw(FTransform& t);
 };
@@ -67,7 +71,7 @@ struct PlayerBullet
 
 struct Monster
 {
-	static constexpr float unitRadius{12}; // scale = radius / unitRadius
+	static constexpr float cUnitRadius{12}; // scale = radius / unitRadius
 	Scene* scene{};
 
 	float frameIndex{}, frameIndexMax{};
@@ -86,8 +90,8 @@ struct Monster
 
 struct EffectNumber
 {
-	static constexpr float incZ{30.f / Cfg::framePerSeconds};
-	static constexpr int life{int(0.8 * Cfg::framePerSeconds)};
+	static constexpr float cIncZ{30.f / Cfg::framePerSeconds};
+	static constexpr int cLife{int(0.8 * Cfg::framePerSeconds)};
 	Scene* scene{};
 
 	UPaperSprite* sprites[12];

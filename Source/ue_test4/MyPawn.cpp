@@ -133,13 +133,13 @@ void AMyPawn::Tick(float DeltaTime)
 		scene->mouseGridPos.y = p.Y + scene->gridCenter.y;
 	}
 
+	scene->screenWidth = screenWidth;	// for update
 	auto bak = scene->time;
 	scene->Update(DeltaTime);
 	if (bak != scene->time)
 	{
 		scene->screenMinY = scene->camY + screenMinY;
 		scene->screenMaxY = scene->camY + screenMaxY;
-		scene->screenWidth = screenWidth;
 		scene->screenGradient = screenGradient;
 
 		scene->miniMinX = scene->camX - 2000;

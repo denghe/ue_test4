@@ -94,7 +94,7 @@ void Monster::Draw(FTransform& t)
 	{
 		rz = 0;
 		rx = -15;
-		s = radius / unitRadius;
+		s = radius / cUnitRadius;
 
 		t.SetLocation({x, y, 0});
 		t.SetRotation(UE::Math::TQuat<double>::MakeFromEuler({rx, 0, rz}));

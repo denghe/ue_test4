@@ -7,7 +7,7 @@ void EffectNumber::Init(Scene* scene_, float x_, float y_, float scale_, double 
 	pos.y = y_;
 	scale = scale_;
 	criticalHit = criticalHit_;
-	endLifeTime = scene->time + life;
+	endLifeTime = scene->time + cLife;
 
 	// fill sprites by v_
 	char buf[12];
@@ -20,7 +20,7 @@ void EffectNumber::Init(Scene* scene_, float x_, float y_, float scale_, double 
 
 bool EffectNumber::Update()
 {
-	z += incZ;
+	z += cIncZ;
 	return endLifeTime < scene->time;;
 }
 

@@ -108,7 +108,7 @@ void Scene::Init()
 {
 	// create player & init
 	player = xx::MakeShared<Player>();
-	player->Init(this, gridCenter, 28, 3);
+	player->Init(this, gridCenter, 28);
 
 	// space index init
 	monsters.Init(Scene::numRows, Scene::numCols, Scene::cellSize);
@@ -129,9 +129,9 @@ void Scene::Init()
 	for (auto& i : srdd.idxs)
 	{
 		monsters.EmplaceInit(this, XY{
-			                     gridCenter.x + (float)i.x * Monster::unitRadius * 3,
-			                     gridCenter.y + (float)i.y * Monster::unitRadius * 3
-		                     }, Monster::unitRadius, 2);
+			                     gridCenter.x + (float)i.x * Monster::cUnitRadius * 2.1,
+			                     gridCenter.y + (float)i.y * Monster::cUnitRadius * 2.1
+		                     }, Monster::cUnitRadius, 4);
 		//if (monsters.Count() >= 50000) break;	// limit for test
 	}
 }
@@ -174,12 +174,13 @@ void Scene::Update(float delta)
 			});
 #else
 			// faster?
-			monsters.ForeachByRange(srdd, player->pos.x, player->pos.y, 1400, [this](Monster& o)-> xx::ForeachResult
-			{
-				if (o.Update()) return xx::ForeachResult::RemoveAndContinue;
-				monsters.Update(o);
-				return xx::ForeachResult::Continue;
-			});
+			monsters.ForeachByRange(srdd, player->pos.x, player->pos.y, screenWidth * 2,
+			                        [this](Monster& o)-> xx::ForeachResult
+			                        {
+				                        if (o.Update()) return xx::ForeachResult::RemoveAndContinue;
+				                        monsters.Update(o);
+				                        return xx::ForeachResult::Continue;
+			                        });
 #endif
 		}
 
@@ -196,7 +197,7 @@ void Scene::Update(float delta)
 				effectNumbers.SwapRemoveAt(i);
 			}
 		}
-		
+
 		// ...
 	}
 }
@@ -226,7 +227,7 @@ void Scene::Draw()
 		o.DrawMini(t);
 	});
 #else
-	monsters.ForeachByRange(srdd, player->pos.x, player->pos.y, 1400, [&](Monster& o)-> void
+	monsters.ForeachByRange(srdd, player->pos.x, player->pos.y, screenWidth * 2, [&](Monster& o)-> void
 	{
 		o.Draw(t);
 	});
@@ -241,7 +242,7 @@ void Scene::Draw()
 		o.Draw(t);
 	});
 
-	for(auto& en : effectNumbers)
+	for (auto& en : effectNumbers)
 	{
 		en.Draw(t);
 	}

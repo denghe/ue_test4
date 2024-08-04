@@ -1,12 +1,12 @@
 #include "_Scene.h"
 
-void Player::Init(Scene* scene_, XY pos_, float radius_, float speed_)
+void Player::Init(Scene* scene_, XY pos_, float radius_)
 {
 	scene = scene_;
 	frameIndexMax = scene->sprites_player.Num();
 	pos = pos_;
 	radius = radius_;
-	speed = speed_;
+	moveSpeed = cMoveSpeed;
 }
 
 bool Player::Update()
@@ -15,7 +15,7 @@ bool Player::Update()
 	{
 		// move control
 		auto& mv = scene->playerMoveValue;
-		pos += mv * speed;
+		pos += mv * moveSpeed;
 
 		// flip check
 		if (mv.x != 0)
@@ -35,13 +35,12 @@ bool Player::Update()
 
 	auto bak = radians;
 	auto d = scene->mouseGridPos - pos;
-	radians = xx::RotateControl::LerpAngleByFixed(std::atan2(d.y, d.x), radians, frameMaxChangeRadian);
+	radians = xx::RotateControl::LerpAngleByFixed(std::atan2(d.y, d.x), radians, cFrameMaxChangeRadian);
 	
 	// small shoot
-	constexpr float bulletSpeed = 16;
 	if (scene->mouseBtn1Pressed)
 	{
-		scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), radians, 14, bulletSpeed, bulletSpeed);
+		scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), radians);
 	}
 
 	// big shoot
@@ -56,12 +55,11 @@ bool Player::Update()
 		{
 			rd += xx::g2PI;
 		}
-		constexpr int shootCount = 100;		// shoot count
-		auto radiansStep = rd / shootCount;	// linear angle
-		for (int i = 0; i < shootCount; ++i)
+		auto radiansStep = rd / cBigShootBulletCount;	// linear angle
+		for (int i = 0; i < cBigShootBulletCount; ++i)
 		{
-			scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), radians + radiansStep * i, 14
-			                                    , bulletSpeed, bulletSpeed / shootCount * i);
+			scene->playerBullets.Emplace().Init(xx::SharedFromThis(this), radians + radiansStep * i, PlayerBullet::cUnitRadius
+			                                    , PlayerBullet::cSpeed / cBigShootBulletCount * i);
 		}
 	}
 
@@ -77,7 +75,7 @@ void Player::Draw(FTransform& t)
 	if (flipX) rz = 180;
 	else rz = 0;
 	rx = 0;
-	s = radius / unitRadius;
+	s = radius / cUnitRadius;
 
 	// camera follow player
 	scene->camX = x;

@@ -45,14 +45,17 @@ void AMyPawn::BeginPlay()
 
 	// init display 
 	auto us = GEngine->GetGameUserSettings();
-	us->SetScreenResolution({1920, 1080});
+	us->SetScreenResolution({1280, 800});
 	us->SetFullscreenMode(EWindowMode::Type::Windowed); // windows for debug break point
 	us->ApplySettings(false);
-	// if (us->SupportsHDRDisplayOutput())
-	// {
-	// 	//us->EnableHDRDisplayOutput(true);	// not working...
-	// 	GEngine->Exec(w, TEXT("r.HDR.EnableHDROutput 1")); // ok
-	// }
+
+	//if (us->SupportsHDRDisplayOutput()) {
+	//	//us->EnableHDRDisplayOutput(true);	// not working...
+	//	GEngine->Exec(w, TEXT("r.HDR.EnableHDROutput 1")); // ok
+	//}
+
+	//// set render percentage 
+	//IConsoleManager::Get().FindConsoleVariable(TEXT("r.ScreenPercentage"))->Set(80.0f);
 
 	// input init 
 	pc = Cast<APlayerController>(Controller);
